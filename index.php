@@ -38,7 +38,7 @@ if ( isset($_POST['stage']) )
        }
        else
        {
-	    if ( !in_array(strtolower($row['a_status']), array('preconfirmation','confirmed','expected', 'clarification')) )
+	    if ( !in_array(strtolower($row['a_status']), array('preconfirmation','reconfirmation','confirmed','expected', 'clarification')) )
 	    {
 		$err = 1;
 		$err_msg = "Invalid Status!";
@@ -46,7 +46,7 @@ if ( isset($_POST['stage']) )
 	    else
 	    {
 		$status = array();
-		if (strtolower($row['a_status']) == 'preconfirmation')
+		if (strtolower($row['a_status']) == 'preconfirmation') || (strtolower($row['a_status']) == 'reconfirmation')
 		   $status['Confirmed'] = 'Confirm my Attendance';
 		if (strtolower($row['a_status']) == 'clarification')
 		   $status['Clarification-Response'] = 'Send Clarification Response';
