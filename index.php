@@ -45,9 +45,11 @@ if ( isset($_POST['stage']) )
 	    }
 	    else
 	    {
-		$status = array();
-		if (strtolower($row['a_status']) == 'preconfirmation') || (strtolower($row['a_status']) == 'reconfirmation')
+		$status = array(); 
+		if (strtolower($row['a_status']) == 'preconfirmation')
 		   $status['Confirmed'] = 'Confirm my Attendance';
+    if (strtolower($row['a_status']) == 'reconfirmation')
+       $status['Expected'] = 'Re-confirm my Attendance';     
 		if (strtolower($row['a_status']) == 'clarification')
 		   $status['Clarification-Response'] = 'Send Clarification Response';
 		$status['Cancelled'] = 'Cancel my Application';
@@ -70,7 +72,7 @@ if ( isset($_POST['stage']) )
    {
 	$input_status = $_POST['status'];
 	$file = '';
-	if ( in_array($input_status, array('Cancelled', 'Confirmed', 'Clarification-Response'))  )
+	if ( in_array($input_status, array('Cancelled', 'Confirmed', 'Expected', 'Clarification-Response'))  )
 	{
 	   if ( isset($_FILES) && isset($_FILES['doc']) && ($_FILES['doc']['name'] <> '') )
 	   {
