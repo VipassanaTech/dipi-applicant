@@ -18,6 +18,8 @@ db_connect();
 $system_uids = db_sql_get_options("select td_key, td_val1 from dh_type_detail where td_type = 'COURSE-APPLICANT'");
 
 $app['a_old'] = $data['a_old']; // Assuming old student, since first phase is only for seva
+if ($data['a_type'] == '')
+   $data['a_type'] = 'Student';
 $app['a_type'] = $data['a_type'];
 $app['a_status'] =  '';
 $app['a_source'] = 'ExtApp';
@@ -39,6 +41,11 @@ foreach ($data as $key => $value)
         if ($data['a_old'])
             $app_ac[$key] = $value;
     }
+    if ( substr($key,0,3) == 'al_')
+    {
+        if ($data['a_old'])
+            $app_al[$key] = $value;
+    }    
     if ( substr($key,0,3) == 'ae_')
     {
         if (in_array($key, array('ae_desc_other_technique', 'ae_desc_mental', 'ae_desc_physical', 'ae_desc_medication', 'ae_desc_addiction_current')))
@@ -142,8 +149,14 @@ if (isset($app_ac))
     db_exec('dh_applicant_course', $app_ac);
 }
 
+if (isset($app_al))
+{
+    $app_al['al_applicant'] = $app_id;
+    db_exec('dh_applicant_lc', $app_al);
+}
+
 $msg = "Application submitted successfully";
-#return array("Result" => "Success", "Message" => $msg, 'ID' => $app_id );
+//return array("Result" => "Success", "Message" => $msg, 'ID' => $app_id );
 print("Appid $app_id submitted successfully");
 $old = getcwd();
 chdir($APP_ROOT);
