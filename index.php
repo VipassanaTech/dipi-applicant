@@ -110,6 +110,7 @@ if ( isset($_POST['stage']) )
 	      if ( $input_status == 'Clarification-Response' )
 	      {
  	          $msg = htmlentities(addslashes($_POST['msg']));
+            mysql_set_charset('utf8');
 	          $q = "insert into dh_applicant_clarification( ac_app, ac_msg, ac_file) VALUES ('".$row['a_id']."', '$msg', '$file')";
  	          mysql_query($q);
 	      }
