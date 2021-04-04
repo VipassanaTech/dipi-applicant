@@ -118,7 +118,7 @@ if ( isset($_POST['stage']) )
 		{
 		   if ( !$err )
 		   {
-			  $area_teacher = $_POST['areat'];
+			  $area_teacher = addslashes($_POST['areat']);
 			  $err_msg = "Thank you, your request has been submitted";
 			  $logged_in = 0;
 			  chdir($APP_ROOT);
@@ -128,12 +128,16 @@ if ( isset($_POST['stage']) )
 			  {
 				 if ($input_status == 'Approved')
 				 {
+				 	$append = "";
 					$new_status = 'A-ATReview';
 					if ($cat == 1)
+					{
 						$new_status = 'Received';
-					$q = "update dh_applicant_lc set al_area_at='$area_teacher' where $auth_field ='$auth'";
-					//echo($q);
-					 mysql_query($q);
+						$append = ", al_area_at_approved='Approved' ";
+					}
+					$q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved' $append where $auth_field ='$auth'";
+					echo($q);
+					mysql_query($q);
 
 				 }
 				 else
@@ -142,7 +146,12 @@ if ( isset($_POST['stage']) )
 			  elseif ($rtype == 'a') 
 			  {
 				 if ($input_status == 'Approved')
+				 {
 				 	$new_status = 'Received';
+					$q = "update dh_applicant_lc set  al_area_at_approved='Approved' where $auth_field ='$auth'";
+					//echo($q);
+					 mysql_query($q);
+				 }	
 				 else
 				   $new_status = 'Rejected'; 
 			  }
