@@ -1,6 +1,8 @@
 <?php
 
+include_once('vendor/autoload.php');
 include_once("constants.inc");
+
 
 $PHOTO_DIR = "/dhamma/web/files/dipi/photo-id";
 
@@ -81,6 +83,20 @@ if ($data['country'])
         logit("Failed to get country - ".$e->getMessage()  ) ;   
     }
 }
+
+try {
+    $mobile_format = \libphonenumber\PhoneNumberUtil::getInstance();
+    $m_phone = $mobile_format->parse($app['a_phone_mobile'], null, null, true);
+    $m_country_code = $m_phone->getCountryCode();
+    $app['a_mob_country'] = (string)$m_country_code;
+    $num = str_replace( "+", "", $app['a_phone_mobile']);
+    $num = substr($num, strlen((string)$m_country_code));
+    $app['a_phone_mobile'] = $num;
+    
+} catch (Exception $e) {
+     logit("Failed to get phone country code - ".$e->getMessage()  ) ;      
+}
+
 
 
 if ($app['a_city'] <> '')
