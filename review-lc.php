@@ -136,12 +136,16 @@ if ( isset($_POST['stage']) )
 						$append = ", al_area_at_approved='Approved' ";
 					}
 					$q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved' $append where $auth_field ='$auth'";
-					echo($q);
+					//echo($q);
 					mysql_query($q);
-
 				 }
 				 else
-				   $new_status = 'Rejected'; 
+				 {
+				 	$new_status = 'Rejected'; 
+				 	$q = "update dh_applicant_lc set  al_recommending_approved='Rejected' where $auth_field ='$auth'";
+				 	mysql_query($q);				 	
+				 }
+				   
 			  }
 			  elseif ($rtype == 'a') 
 			  {
@@ -153,7 +157,11 @@ if ( isset($_POST['stage']) )
 					 mysql_query($q);
 				 }	
 				 else
-				   $new_status = 'Rejected'; 
+				 {
+				 	$new_status = 'Rejected'; 
+				 	$q = "update dh_applicant_lc set  al_area_at_approved='Rejected' where $auth_field ='$auth'";
+				 	mysql_query($q);
+				 }
 			  }
 			  $cmd = "/usr/bin/php status-trigger.php $app_id '$new_status'";
 			  //echo "$cmd";
