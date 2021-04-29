@@ -141,7 +141,7 @@ if ( isset($_POST['stage']) )
 				 }
 				 else
 				 {
-				 	$new_status = 'Rejected'; 
+				 	$new_status = 'Rejected-R-AT'; 
 				 	$q = "update dh_applicant_lc set  al_recommending_approved='Rejected' where $auth_field ='$auth'";
 				 	mysql_query($q);				 	
 				 }
@@ -158,7 +158,7 @@ if ( isset($_POST['stage']) )
 				 }	
 				 else
 				 {
-				 	$new_status = 'Rejected'; 
+				 	$new_status = 'Rejected-A-AT'; 
 				 	$q = "update dh_applicant_lc set  al_area_at_approved='Rejected' where $auth_field ='$auth'";
 				 	mysql_query($q);
 				 }
