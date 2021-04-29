@@ -58,7 +58,7 @@ if ( isset($_POST['stage']) )
 	   }
 	   else
 	   {
-			if ( !in_array(strtolower($row['a_status']), array('r-atreview', 'a-atreview', 'received')) )
+			if ( !in_array(strtolower($row['a_status']), array('r-atreview', 'a-atreview', 'received', 'errors')) )
 			{
 				$err = 1;
 				$err_msg = "Invalid Status!";
