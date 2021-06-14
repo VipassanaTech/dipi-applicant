@@ -242,21 +242,28 @@ if ( isset($_POST['stage']) )
 	</table>
 	</div>
 		</td>
-	  </tr>
-	  <tr><td colspan='2'><b>Applicant does not fulfil the following criteria</b><br>(Please discuss with the applicant & proceed)</td></tr>
+	  </tr>	  
 	  <?php
-	$fields_no = array('al_committed' => 'Committed to tradition?', 'al_exclusive_2yrs' => 'Maintained 2 yr. practice?', 'al_5_precepts' => 'Maintained 5 precepts?', 'al_intoxicants' => 'Abstained from intoxicants?', 'al_sexual_misconduct' => 'Abstained from sexual misconduct?', 'al_spouse_approve' => 'Spouse Approves?');
-		$fields_yes = array( 'al_left_course' => 'Left course before?','al_left_course_details' => 'Left course details', 'al_reduce_practice' => 'Asked to reduce practice?', 'al_personal_tragedy' => 'Recent personal tragedy');
-	foreach( $fields_no as $f => $l )
-	   if ($row[$f] == '0')
-		print "<tr><td>".$l."</td><td>No</td></tr>";
-	foreach( $fields_yes as $f => $l)
-		   if ($row[$f] == '1')
-				print "<tr><td>".$l."</td><td>Yes</td></tr>";
+			$fields_no = array('al_committed' => 'Committed to tradition?', 'al_exclusive_2yrs' => 'Practicing Vipassana exclusively for 2 years?', 'al_5_precepts' => 'Maintained 5 precepts?', 'al_intoxicants' => 'Abstained from intoxicants?', 'al_sexual_misconduct' => 'Abstained from sexual misconduct?', 'al_spouse_approve' => 'Spouse Approves?');
+			$fields_yes = array( 'al_left_course' => 'Left course before?','al_left_course_details' => 'Left course details', 'al_reduce_practice' => 'Asked to reduce practice?', 'al_personal_tragedy' => 'Recent personal tragedy');
+			$i = 1;
+				
+			foreach( $fields_no as $f => $l )
+			  if ($row[$f] == '0') {
+			  	if ($i == '1') {
+				  	print "<tr><td colspan='2'><b>Applicant does not fulfil the following criteria</b><br>(Please discuss with the applicant & proceed)</td></tr>";
+				  	$i--;
+				  }
+					print "<tr><td>".$l."</td><td>No</td></tr>";
+				}
+
+			foreach( $fields_yes as $f => $l)
+				   if ($row[$f] == '1')
+						print "<tr><td>".$l."</td><td>Yes</td></tr>";
 	  ?>
 	  <?php if ($cat == 0) { ?>
 	  <tr>
-	<td>Area Teacher</td><td><select name="areat"><?php print $select_area_t; ?></select></td>
+	<td>Area Teacher</td><td><select name="areat" required><?php print $select_area_t; ?></select></td>
 	 </tr>
 	 <?php } ?>
 	  <tr>
