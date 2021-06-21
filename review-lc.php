@@ -84,8 +84,9 @@ if ( isset($_POST['stage']) )
 				$status['Rejected'] = 'Reject Application';
 				$status['Approved'] = 'Approve Application';
 				$status_opt = '';
-				foreach( $status as $k => $v )
-				  $status_opt .= '<option value="'.$k.'">'.$v.'</option>';
+				foreach( $status as $k => $v ) {
+					$status_opt .= '<td><input type="radio" name="status" value="'.$k.'">'.$v.'</td>';	
+				}				  
 			}
 		}
    }
@@ -192,6 +193,26 @@ if ( isset($_POST['stage']) )
 	</style>
 	<script src="/jquery.min.js"></script>
 	<script src="/bootstrap.min.js"></script>
+
+	<!-- Show Area teacher select on approval -->
+	<script>
+		$(document).ready(function(){
+			var val = 'Approved';
+			$("input[name=status][value="+val+"]").prop('checked', true);
+			
+			$('input:radio[name="status"]').change(
+	    function(){
+	      if ($(this).is(':checked') && $(this).val() == 'Rejected') {
+	    	  $(".areat-row").addClass("hidden");
+					$(".areat-select").attr("required",false);
+      	}
+      	else {
+      		$(".areat-row").removeClass("hidden");
+					$(".areat-select").attr("required",true);	
+      	}
+	    });  		
+    });
+	</script>
   </head>
 
   <body class="text-center">
@@ -261,19 +282,23 @@ if ( isset($_POST['stage']) )
 				   if ($row[$f] == '1')
 						print "<tr><td>".$l."</td><td>Yes</td></tr>";
 	  ?>
-	  <?php if ($cat == 0) { ?>
-	  <tr>
-	<td>Area Teacher</td><td><select name="areat" required><?php print $select_area_t; ?></select></td>
-	 </tr>
-	 <?php } ?>
-	  <tr>
-	<td colspan=2><b>I would like to </b></td>
-	  </tr>
-	  <tr>
-	   <td colspan=2><select name="status" class="form-control"><?php echo $status_opt;?></select></td>
-	  </tr>
+
+	<tr>
+		<td colspan=2><b>I would like to </b></td>
+	</tr>
+	<tr>
+	<?php
+		print $status_opt;
+	?>
+	</tr>
+	<?php if ($cat == 0) { ?>
+	<tr class="areat-row">
+		<td>Area Teacher</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
+	</tr>
+	 <?php } ?>	
+	  
 	  <?php if (strtolower($row['a_status']) == 'clarification'): ?>
-	  <tr>
+	<tr>
 	   <td colspan=2><textarea class="form-control" name="msg" rows=4 placeholder="Message" required></textarea></td>
 	  </tr>
 	  <tr>
