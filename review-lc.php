@@ -85,7 +85,7 @@ if ( isset($_POST['stage']) )
 				$status['Approved'] = 'Approve Application';
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
-					$status_opt .= '<td><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';	
+					$status_opt .= '<td><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';
 				}				  
 			}
 		}
@@ -100,13 +100,13 @@ if ( isset($_POST['stage']) )
 		$logged_in = 1;
 		if ($cat == 0)
 		{
-			$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name' from dh_teacher where t_cat=1 order by t_f_name, t_l_name";
+			$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where t_cat=1 order by t_f_name, t_l_name";
 			$hand = mysql_query($q);
 			$area_t = array('<option value="">Select Area Teacher</option>');
 			if ($hand)
 			{
 			   while($r = mysql_fetch_array($hand))
-				   $area_t[] = '<option value="'.$r['name'].'">'.$r['name'].'</option>';
+				   $area_t[] = '<option value="'.$r['name'].'">'.$r['name'].' '.$r['area'].'</option>';
 			}
 				$select_area_t = implode("", $area_t );
 		}
@@ -123,6 +123,8 @@ if ( isset($_POST['stage']) )
 			  $err_msg = "Thank you, your request has been submitted";
 			  $logged_in = 0;
 			  chdir($APP_ROOT);
+			  $comments = trim($_POST['comments']);
+			  $reason = trim($_POST['reason']);
 			  $app_id = $row['a_id'];
 			  $new_status = '';
 			  if ($rtype == 'r')
@@ -130,20 +132,20 @@ if ( isset($_POST['stage']) )
 				 if ($input_status == 'Approved')
 				 {
 				 	$append = "";
-					$new_status = 'A-ATReview';
+					$new_status = 'A-ATReview';					
 					if ($cat == 1)
 					{
 						$new_status = 'Received';
-						$append = ", al_area_at_approved='Approved' ";
+						$append = ", al_area_at_approved='Approved', al_area_at_comments = '$comments' ";
 					}
-					$q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved' $append where $auth_field ='$auth'";
+					$q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved', al_recommending_comments = '$comments' $append where $auth_field ='$auth'";
 					//echo($q);
 					mysql_query($q);
 				 }
 				 else
 				 {
 				 	$new_status = 'Rejected-R-AT'; 
-				 	$q = "update dh_applicant_lc set  al_recommending_approved='Rejected' where $auth_field ='$auth'";
+				 	$q = "update dh_applicant_lc set  al_recommending_approved='Rejected', al_recommending_comments = '$reason' where $auth_field ='$auth'";
 				 	mysql_query($q);				 	
 				 }
 				   
@@ -153,14 +155,14 @@ if ( isset($_POST['stage']) )
 				 if ($input_status == 'Approved')
 				 {
 				 	$new_status = 'Received';
-					$q = "update dh_applicant_lc set  al_area_at_approved='Approved' where $auth_field ='$auth'";
+					$q = "update dh_applicant_lc set  al_area_at_approved='Approved', al_area_at_comments = '$comments' where $auth_field ='$auth'";
 					//echo($q);
 					 mysql_query($q);
 				 }	
 				 else
 				 {
 				 	$new_status = 'Rejected-A-AT'; 
-				 	$q = "update dh_applicant_lc set  al_area_at_approved='Rejected' where $auth_field ='$auth'";
+				 	$q = "update dh_applicant_lc set  al_area_at_approved='Rejected', al_area_at_comments = '$reason' where $auth_field ='$auth'";
 				 	mysql_query($q);
 				 }
 			  }
@@ -186,6 +188,8 @@ if ( isset($_POST['stage']) )
 
 	<link href="/bootstrap.min.css" rel="stylesheet">
 	<link href="/signin.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	
 	<style>
 	.message{ color: #ff0000; }
 		.course-details{ width: 100%; }
@@ -193,22 +197,31 @@ if ( isset($_POST['stage']) )
 	</style>
 	<script src="/jquery.min.js"></script>
 	<script src="/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 	<!-- Show Area teacher select on approval -->
 	<script>
 		$(document).ready(function(){
+			$('.areat-select').select2();
+
 			var val = 'Approved';
 			$("input[name=status][value="+val+"]").prop('checked', true);
 			
 			$('input:radio[name="status"]').change(
 	    function(){
 	      if ($(this).is(':checked') && $(this).val() == 'Rejected') {
-	    	  $(".areat-row").addClass("hidden");
+	    	  $(".areat-row").hide();
 					$(".areat-select").attr("required",false);
+					$(".comments").hide();
+					$(".reason").show();
+					$(".reason-text").attr("required",true);
       	}
       	else {
-      		$(".areat-row").removeClass("hidden");
-					$(".areat-select").attr("required",true);	
+      		$(".areat-row").show();
+					$(".areat-select").attr("required",true);
+					$(".comments").show();
+					$(".reason").hide();
+					$(".reason-text").attr("required",false);
       	}
 	    });  		
     });
@@ -231,15 +244,15 @@ if ( isset($_POST['stage']) )
 	 <?php if ($err_msg): ?><h2 class="h3 mb-3 font-weight-normal message"><?php echo $err_msg; ?></h2> <?php endif; ?>
   <table class="table table-hover">
 	<tbody>
-	  <tr>
+	  <tr class="align-left">
 	   <td>Course</td>
 	   <td><?php echo $row['c_name']?></td>
 	  </tr>
-	  <tr>
+	  <tr class="align-left">
 	   <td>Name</td>
 	   <td><?php echo $row['Name']?></td>
 	  </tr>
-	  <tr>
+	  <tr class="align-left">
 	   <td>Location</td>
 	   <td><?php echo $row['a_city_str']?></td>
 	  </tr>
@@ -282,32 +295,45 @@ if ( isset($_POST['stage']) )
 				   if ($row[$f] == '1')
 						print "<tr><td>".$l."</td><td>Yes</td></tr>";
 	  ?>
+	  <?php if ($row['al_recommending_comments'] <> '') { ?>
+	  	<tr>
+	  		<td colspan="2"><b>Recommending AT Comments</b></td>
+	  	</tr>
+	  	<tr>
+	  		<td colspan="2"><?php print $row['al_recommending_comments']?></td>
+	  	</tr>
+	  <?php }?>	  
+		<tr>
+			<td colspan=2><b>I would like to </b></td>
+		</tr>
+		<tr>
+		<?php
+			print $status_opt;
+		?>
+		</tr>
+		<?php if ($cat == 0) { ?>
+		<tr class="areat-row">
+			<td class="align-middle">Area Teacher</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
+		</tr>
+		<?php } ?>
+		<tr class="comments">
+			<td colspan=2><textarea class="form-control" name="comments" rows=4 placeholder="Comments (Optional)"></textarea></td>
+		</tr>
+		<tr class="reason" style="display: none;">
+			<td colspan=2><textarea class="reason-text form-control" name="reason" rows=4 placeholder="Reason for rejection"></textarea></td>
+		</tr>
 
-	<tr>
-		<td colspan=2><b>I would like to </b></td>
-	</tr>
-	<tr>
-	<?php
-		print $status_opt;
-	?>
-	</tr>
-	<?php if ($cat == 0) { ?>
-	<tr class="areat-row">
-		<td class="align-middle">Area Teacher</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
-	</tr>
-	 <?php } ?>	
-	  
-	  <?php if (strtolower($row['a_status']) == 'clarification'): ?>
-	<tr>
+		<?php if (strtolower($row['a_status']) == 'clarification'): ?>
+		<tr>
 	   <td colspan=2><textarea class="form-control" name="msg" rows=4 placeholder="Message" required></textarea></td>
 	  </tr>
 	  <tr>
-	<td><label>Document if any (PDF only)</label></td>
-	   <td><input type="file" name="doc" /></td>
+			<td><label>Document if any (PDF only)</label></td>
+	   	<td><input type="file" name="doc" /></td>
 	  </tr>
 	 <?php endif; ?>
 	  <tr>
-	  <td colspan=2><button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button></td>
+	  	<td colspan=2><button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button></td>
 	  </tr>
 	</tbody>
 	</table>

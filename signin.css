@@ -20,10 +20,10 @@ body {
 }
 
 .form-signin {
-  width: 100%;
-  max-width: 730px;
-  padding: 15px;
-  margin: 0 auto;
+  /*width: 100%;*/
+  max-width: 1000px;
+  padding: 10px;
+  margin: auto;
 }
 .form-signin .checkbox {
   font-weight: 400;
@@ -52,4 +52,17 @@ body {
 
 .align-middle {
   vertical-align: middle !important;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.form-signin table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.areat-select {
+  width: 450px;
 }
