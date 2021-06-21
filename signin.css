@@ -21,7 +21,7 @@ body {
 
 .form-signin {
   width: 100%;
-  max-width: 430px;
+  max-width: 730px;
   padding: 15px;
   margin: 0 auto;
 }
@@ -46,3 +46,10 @@ body {
   border-bottom-left-radius: 0;
 }
 
+.form-signin input[type=radio] {
+  margin: 10px;
+}
+
+.align-middle {
+  vertical-align: middle !important;
+}

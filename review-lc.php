@@ -85,7 +85,7 @@ if ( isset($_POST['stage']) )
 				$status['Approved'] = 'Approve Application';
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
-					$status_opt .= '<td><input type="radio" name="status" value="'.$k.'">'.$v.'</td>';	
+					$status_opt .= '<td><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';	
 				}				  
 			}
 		}
@@ -189,7 +189,7 @@ if ( isset($_POST['stage']) )
 	<style>
 	.message{ color: #ff0000; }
 		.course-details{ width: 100%; }
-		.photo{ width: 50%; }
+		.photo{ width: 25%; }
 	</style>
 	<script src="/jquery.min.js"></script>
 	<script src="/bootstrap.min.js"></script>
@@ -293,7 +293,7 @@ if ( isset($_POST['stage']) )
 	</tr>
 	<?php if ($cat == 0) { ?>
 	<tr class="areat-row">
-		<td>Area Teacher</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
+		<td class="align-middle">Area Teacher</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
 	</tr>
 	 <?php } ?>	
 	  
