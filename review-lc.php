@@ -9,7 +9,7 @@ if ($rtype == 'r') {$auth_field = 'al_recommending_auth'; $submit_url = "r-revie
 if ($rtype == 'a') {$auth_field = 'al_area_auth'; $submit_url = "a-review" ; }
 $cat = 0;
 $logged_in = 0;
-if ( isset($_POST['stage']) )
+if ( isset($_REQUEST['stage']) )
 {
    if (! mysql_connect($DB_HOST, $DB_USER, $DB_PASS))
    {
@@ -23,7 +23,7 @@ if ( isset($_POST['stage']) )
 	  $err_msg = "Select Failed!";
    }
    //$login = htmlentities(addslashes($_POST['login']));
-   $auth = htmlentities(addslashes($_POST['authcode']));
+   $auth = htmlentities(addslashes($_REQUEST['authcode']));
    $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str, a_photo,  ac.*, al.* from dh_applicant left join dh_course on (a_course=c_id) left join dh_applicant_lc al on (a_id=al_applicant) left join dh_applicant_course ac on (a_id=ac_applicant) where  $auth_field ='$auth'";
    $hand = mysql_query($q);
    if (!$hand)
@@ -95,7 +95,7 @@ if ( isset($_POST['stage']) )
 		$err = 1;
 		$err_msg = "Invalid Login Details!";
    }
-   if ( (!$err) && ($_POST['stage'] == 1) )
+   if ( (!$err) && ($_REQUEST['stage'] == 1) )
    {
 		$logged_in = 1;
 		if ($cat == 0)
@@ -111,7 +111,7 @@ if ( isset($_POST['stage']) )
 				$select_area_t = implode("", $area_t );
 		}
    }
-   elseif( (!$err)  && ($_POST['stage'] == 2) )
+   elseif( (!$err)  && ($_REQUEST['stage'] == 2) )
    {
 		$input_status = $_POST['status'];
 		$file = '';
