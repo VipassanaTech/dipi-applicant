@@ -100,9 +100,9 @@ if ( isset($_REQUEST['stage']) )
 		$logged_in = 1;
 		if ($cat == 0)
 		{
-			$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where t_cat=1 order by t_f_name, t_l_name";
+			$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where (t_cat=1 or t_full_t=1) order by t_f_name, t_l_name";
 			$hand = mysql_query($q);
-			$area_t = array('<option value="">Select Area Teacher</option>');
+			$area_t = array('<option value="">Select CAT/T</option>');
 			if ($hand)
 			{
 			   while($r = mysql_fetch_array($hand))
@@ -313,7 +313,7 @@ if ( isset($_REQUEST['stage']) )
 		</tr>
 		<?php if ($cat == 0) { ?>
 		<tr class="areat-row">
-			<td class="align-middle">Area Teacher</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
+			<td class="align-middle">CAT/T</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
 		</tr>
 		<?php } ?>
 		<tr class="comments">
