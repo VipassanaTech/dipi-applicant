@@ -5,8 +5,8 @@ include_once("constants.inc");
 $err = 0;
 $err_msg = '';
 $rtype = $_REQUEST['t'];
-if ($rtype == 'r') {$auth_field = 'al_recommending_auth'; $submit_url = "r-review"; }
-if ($rtype == 'a') {$auth_field = 'al_area_auth'; $submit_url = "a-review" ; }
+if ($rtype == 'r') {$auth_field = 'al_recommending_auth'; $submit_url = "/r-review"; }
+if ($rtype == 'a') {$auth_field = 'al_area_auth'; $submit_url = "/a-review" ; }
 $cat = 0;
 $logged_in = 0;
 if ( isset($_REQUEST['stage']) )
