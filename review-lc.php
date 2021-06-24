@@ -98,18 +98,15 @@ if ( isset($_REQUEST['stage']) )
    if ( (!$err) && ($_REQUEST['stage'] == 1) )
    {
 		$logged_in = 1;
-		if ($cat == 0)
+		$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where (t_cat=1 or t_full_t=1) order by t_f_name, t_l_name";
+		$hand = mysql_query($q);
+		$area_t = array('<option value="">Select CAT/T</option>');
+		if ($hand)
 		{
-			$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where (t_cat=1 or t_full_t=1) order by t_f_name, t_l_name";
-			$hand = mysql_query($q);
-			$area_t = array('<option value="">Select CAT/T</option>');
-			if ($hand)
-			{
-			   while($r = mysql_fetch_array($hand))
-				   $area_t[] = '<option value="'.$r['name'].'">'.$r['name'].' '.$r['area'].'</option>';
-			}
-				$select_area_t = implode("", $area_t );
+		   while($r = mysql_fetch_array($hand))
+			   $area_t[] = '<option value="'.$r['name'].'">'.$r['name'].' '.$r['area'].'</option>';
 		}
+			$select_area_t = implode("", $area_t );
    }
    elseif( (!$err)  && ($_REQUEST['stage'] == 2) )
    {
@@ -131,13 +128,7 @@ if ( isset($_REQUEST['stage']) )
 			  {
 				 if ($input_status == 'Approved')
 				 {
-				 	$append = "";
-					$new_status = 'A-ATReview';					
-					if ($cat == 1)
-					{
-						$new_status = 'Received';
-						$append = ", al_area_at_approved='Approved', al_area_at_comments = '$comments' ";
-					}
+					$new_status = 'A-ATReview';
 					$q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved', al_recommending_comments = '$comments' $append where $auth_field ='$auth'";
 					//echo($q);
 					mysql_query($q);
@@ -311,11 +302,9 @@ if ( isset($_REQUEST['stage']) )
 			print $status_opt;
 		?>
 		</tr>
-		<?php if ($cat == 0) { ?>
 		<tr class="areat-row">
 			<td class="align-middle">CAT/T</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
 		</tr>
-		<?php } ?>
 		<tr class="comments">
 			<td colspan=2><textarea class="form-control" name="comments" rows=4 placeholder="Comments (Optional)"></textarea></td>
 		</tr>
