@@ -38,7 +38,7 @@ if ( isset($_REQUEST['stage']) )
 	  	if ($rtype == 'r')
 	   		$at_reco = $row['al_recommending'];
 	   	else
-	   		$at_reco = $row['al_area_at'];
+	   		$at_reco = $row['al_area_at'];	   		
 		$q = "select t_cat from dh_teacher where CONCAT(t_f_name, ' ', t_l_name)='".$at_reco."'";
 		$hand = mysql_query($q);
 		if( $hand )
@@ -83,7 +83,9 @@ if ( isset($_REQUEST['stage']) )
 				$status = array(); 
 				$status['Rejected'] = 'Reject Application';
 				$status['Approved'] = 'Approve Application';
-				$status['Transfer'] = 'Transfer to Registrar';
+				if ($rtype == 'r') {
+					$status['Transfer'] = 'Transfer to Registrar';
+				}
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
 					$status_opt .= '<td><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';
@@ -319,9 +321,11 @@ if ( isset($_REQUEST['stage']) )
 			print $status_opt;
 		?>
 		</tr>
-		<tr class="areat-row">
-			<td class="align-middle">CAT/T</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
+		<?php if ($rtype == 'r') {?>
+		<tr class="areat-row">			
+				<td class="align-middle">CAT/T</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>			
 		</tr>
+		<?php } ?>
 		<tr class="comments">
 			<td colspan="3"><textarea class="form-control" name="comments" rows=4 placeholder="Comments (Optional)"></textarea></td>
 		</tr>
