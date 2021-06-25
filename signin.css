@@ -58,11 +58,17 @@ body {
   text-align: left;
 }
 
-.form-signin table {
-  table-layout: fixed;
-  width: 100%;
-}
-
 .areat-select {
   width: 450px;
+}
+
+@media only screen and (max-width: 768px) {
+  .areat-select {
+    width: 200px;
+  }
+
+  table {
+    table-layout: fixed;
+  }
+
 }
