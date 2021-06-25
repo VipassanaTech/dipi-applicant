@@ -83,6 +83,7 @@ if ( isset($_REQUEST['stage']) )
 				$status = array(); 
 				$status['Rejected'] = 'Reject Application';
 				$status['Approved'] = 'Approve Application';
+				$status['Transfer'] = 'Transfer to Registrar';
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
 					$status_opt .= '<td><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';
@@ -112,7 +113,7 @@ if ( isset($_REQUEST['stage']) )
    {
 		$input_status = $_POST['status'];
 		$file = '';
-		if ( in_array($input_status, array('Approved', 'Rejected'))  )
+		if ( in_array($input_status, array('Approved', 'Rejected', 'Transfer'))  )
 		{
 		   if ( !$err )
 		   {
@@ -133,15 +134,21 @@ if ( isset($_REQUEST['stage']) )
 					//echo($q);
 					mysql_query($q);
 				 }
-				 else
+				 elseif ($input_status == 'Rejected')
 				 {
 				 	$new_status = 'Rejected-R-AT'; 
 				 	$q = "update dh_applicant_lc set  al_recommending_approved='Rejected', al_recommending_comments = '$reason' where $auth_field ='$auth'";
 				 	mysql_query($q);				 	
 				 }
-				   
+				 else 
+				 {
+				 	$new_status = 'R-ATTransfer'; 
+				 	$q = "update dh_applicant_lc set  al_recommending='', al_recommending_comments = '$comments' where $auth_field ='$auth'";
+				 	mysql_query($q);
+				 }				   
 			  }
-			  elseif ($rtype == 'a') 
+
+				elseif ($rtype == 'a') 
 			  {
 				 if ($input_status == 'Approved')
 				 {
@@ -207,6 +214,10 @@ if ( isset($_REQUEST['stage']) )
 					$(".reason").show();
 					$(".reason-text").attr("required",true);
       	}
+      	else if ($(this).is(':checked') && $(this).val() == 'Transfer') {
+					$(".areat-row").hide();
+					$(".areat-select").attr("required",false);
+				}
       	else {
       		$(".areat-row").show();
 					$(".areat-select").attr("required",true);
@@ -222,12 +233,13 @@ if ( isset($_REQUEST['stage']) )
   <body class="text-center">
 	<form class="form-signin" method="POST" action="<?php echo $submit_url;?>" enctype="multipart/form-data">
 	 <?php if (!$logged_in): ?>
-	  <h1 class="h3 mb-3 font-weight-normal">Please Enter AuthCode</h1>
 	 <?php if ($err_msg): ?><h2 class="h3 mb-3 font-weight-normal message"><?php echo $err_msg; ?></h2> <?php endif; ?>
+	 <?php if ((isset($_REQUEST['stage']) && ($_REQUEST['stage'] < 2) ) || (!isset($_REQUEST['stage']))): ?>
 	  <label for="inputPassword" class="sr-only">Auth Code</label>
 	  <input type="text" name="authcode" id="inputPassword" class="form-control" placeholder="Auth Code" required autofocus>
 	  <input type="hidden" name="stage" value="1">
 	  <button class="btn btn-lg btn-primary btn-block" type="submit">Review</button>
+	  <?php endif; ?>
 	 <?php else: ?>
 	  <input type="hidden" name="stage" value="2">
 	  <input type="hidden" name="authcode" value="<?php echo $auth; ?>">
@@ -238,14 +250,17 @@ if ( isset($_REQUEST['stage']) )
 	  <tr class="align-left">
 	   <td>Course</td>
 	   <td><?php echo $row['c_name']?></td>
+	   <td></td>
 	  </tr>
 	  <tr class="align-left">
 	   <td>Name</td>
 	   <td><?php echo $row['Name']?></td>
+	   <td></td>
 	  </tr>
 	  <tr class="align-left">
 	   <td>Location</td>
 	   <td><?php echo $row['a_city_str']?></td>
+	   <td></td>
 	  </tr>
 	  <?php if ($photo) 
 	{
@@ -253,7 +268,7 @@ if ( isset($_REQUEST['stage']) )
 	}
 	  ?>
 	  <tr>
-	   <td colspan="2">
+	   <td colspan="3">
 		<div>
 	<table class="course-details">
 	<tr><td>10d</td><td>STP</td><td>20d</td><td>30d</td><td>45d</td><td>60d</td><td>Service</td><td>10SPL</td><td>TSC</td></tr>
@@ -288,14 +303,14 @@ if ( isset($_REQUEST['stage']) )
 	  ?>
 	  <?php if ($row['al_recommending_comments'] <> '') { ?>
 	  	<tr>
-	  		<td colspan="2"><b>Recommending AT Comments</b></td>
+	  		<td colspan="3"><b>Recommending AT Comments</b></td>
 	  	</tr>
 	  	<tr>
-	  		<td colspan="2"><?php print $row['al_recommending_comments']?></td>
+	  		<td colspan="3"><?php print $row['al_recommending_comments']?></td>
 	  	</tr>
 	  <?php }?>	  
 		<tr>
-			<td colspan=2><b>I would like to </b></td>
+			<td colspan="3"><b>I would like to </b></td>
 		</tr>
 		<tr>
 		<?php
@@ -306,15 +321,15 @@ if ( isset($_REQUEST['stage']) )
 			<td class="align-middle">CAT/T</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
 		</tr>
 		<tr class="comments">
-			<td colspan=2><textarea class="form-control" name="comments" rows=4 placeholder="Comments (Optional)"></textarea></td>
+			<td colspan="3"><textarea class="form-control" name="comments" rows=4 placeholder="Comments (Optional)"></textarea></td>
 		</tr>
 		<tr class="reason" style="display: none;">
-			<td colspan=2><textarea class="reason-text form-control" name="reason" rows=4 placeholder="Reason for rejection"></textarea></td>
+			<td colspan="3"><textarea class="reason-text form-control" name="reason" rows=4 placeholder="Reason for rejection"></textarea></td>
 		</tr>
 
 		<?php if (strtolower($row['a_status']) == 'clarification'): ?>
 		<tr>
-	   <td colspan=2><textarea class="form-control" name="msg" rows=4 placeholder="Message" required></textarea></td>
+	   <td colspan="3"><textarea class="form-control" name="msg" rows=4 placeholder="Message" required></textarea></td>
 	  </tr>
 	  <tr>
 			<td><label>Document if any (PDF only)</label></td>
@@ -322,7 +337,7 @@ if ( isset($_REQUEST['stage']) )
 	  </tr>
 	 <?php endif; ?>
 	  <tr>
-	  	<td colspan=2><button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button></td>
+	  	<td colspan="3"><button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button></td>
 	  </tr>
 	</tbody>
 	</table>
