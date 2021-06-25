@@ -41,7 +41,12 @@ foreach ($data as $key => $value)
     if ( substr($key,0,3) == 'ac_')
     {
         if ($data['a_old'])
-            $app_ac[$key] = $value;
+        {
+            if (in_array($key, array('ac_first_location', 'ac_last_location', 'ac_first_teacher', 'ac_last_teacher')))
+                $app_ac[$key."_str"] = $value;
+            else
+                $app_ac[$key] = $value;
+        }
     }
     if ( substr($key,0,3) == 'al_')
     {
