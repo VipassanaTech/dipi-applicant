@@ -216,6 +216,8 @@ if ( isset($_REQUEST['stage']) )
       	}
       	else if ($(this).is(':checked') && $(this).val() == 'Transfer') {
 					$(".areat-row").hide();
+					$(".reason").hide();
+					$(".comments").show();
 					$(".areat-select").attr("required",false);
 				}
       	else {
