@@ -305,7 +305,7 @@ if ( isset($_REQUEST['stage']) )
 				   if ($row[$f] == '1')
 						print "<tr><td>".$l."</td><td>Yes</td></tr>";
 	  ?>
-	  <?php if ($row['al_recommending_comments'] <> '') { ?>
+	  <?php if ($rtype == 'a') { ?>
 	  	<tr>
 	  		<td colspan="3"><b>Recommending AT Comments</b></td>
 	  	</tr>
