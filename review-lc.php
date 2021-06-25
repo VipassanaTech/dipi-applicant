@@ -268,7 +268,7 @@ if ( isset($_REQUEST['stage']) )
 	  </tr>
 	  <?php if ($photo) 
 	{
-	  echo '<tr><td colspan=2><img class="photo" src="data:'.$mime_type.';base64,'.$photo.'"</td></tr>';
+	  echo '<tr><td colspan=3><img class="photo" src="data:'.$mime_type.';base64,'.$photo.'"</td></tr>';
 	}
 	  ?>
 	  <tr>
@@ -295,10 +295,10 @@ if ( isset($_REQUEST['stage']) )
 			foreach( $fields_no as $f => $l )
 			  if ($row[$f] == '0') {
 			  	if ($i == '1') {
-				  	print "<tr><td colspan='2'><b>Applicant does not fulfil the following criteria</b><br>(Please discuss with the applicant & proceed)</td></tr>";
+				  	print "<tr><td colspan='3'><b>Applicant does not fulfil the following criteria</b><br>(Please discuss with the applicant & proceed)</td></tr>";
 				  	$i--;
 				  }
-					print "<tr><td>".$l."</td><td>No</td></tr>";
+					print "<tr><td colspan=2>".$l."</td><td>No</td></tr>";
 				}
 
 			foreach( $fields_yes as $f => $l)
@@ -323,7 +323,7 @@ if ( isset($_REQUEST['stage']) )
 		</tr>
 		<?php if ($rtype == 'r') {?>
 		<tr class="areat-row">			
-				<td class="align-middle">CAT/T</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>			
+				<td class="align-middle">CAT/T</td><td><select class="areat-select" name="areat" required><?php print $select_area_t; ?></select></td>
 		</tr>
 		<?php } ?>
 		<tr class="comments">
