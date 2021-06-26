@@ -120,7 +120,7 @@ if ( isset($_REQUEST['stage']) )
 		   if ( !$err )
 		   {
 			  $area_teacher = addslashes($_POST['areat']);
-			  $err_msg = "Thank you, your request has been submitted";
+			  $err_msg = "Thank you, your review has been submitted";
 			  $logged_in = 0;
 			  chdir($APP_ROOT);
 			  $comments = trim($_POST['comments']);
@@ -253,18 +253,15 @@ if ( isset($_REQUEST['stage']) )
 	<tbody>
 	  <tr class="align-left">
 	   <td>Course</td>
-	   <td><?php echo $row['c_name']?></td>
-	   <td></td>
+	   <td colspan="2"><?php echo $row['c_name']?></td>
 	  </tr>
 	  <tr class="align-left">
 	   <td>Name</td>
-	   <td><?php echo $row['Name']?></td>
-	   <td></td>
+	   <td colspan="2"><?php echo $row['Name']?></td>
 	  </tr>
 	  <tr class="align-left">
 	   <td>Location</td>
-	   <td><?php echo $row['a_city_str']?></td>
-	   <td></td>
+	   <td colspan="2"><?php echo $row['a_city_str']?></td>
 	  </tr>
 	  <?php if ($photo) 
 	{
