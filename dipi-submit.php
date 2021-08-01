@@ -89,6 +89,18 @@ if ($data['country'])
     }
 }
 
+if (isset($data['photo_id_type']))
+{
+    if ($data['photo_id_type'] == 'Voter ID')
+        $app['a_voter_id'] = $data['photo_id_val'];
+    elseif ($data['photo_id_type'] == 'Passport')
+        $app['a_passport'] = $data['photo_id_val'];
+    elseif ($data['photo_id_type'] == 'Aadhar')
+        $app['a_aadhar'] = $data['photo_id_val'];
+    elseif ($data['photo_id_type'] == 'Pancard')
+        $app['a_pancard'] = $data['photo_id_val'];
+}
+
 try {
     $mobile_format = \libphonenumber\PhoneNumberUtil::getInstance();
     $m_phone = $mobile_format->parse($app['a_phone_mobile'], null, null, true);
