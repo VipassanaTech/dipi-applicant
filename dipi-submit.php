@@ -75,7 +75,7 @@ if ($data['country'])
 {
     unset($app['a_state']);
     try {
-        $temp = trim(file_get_contents("https://www.dhamma.in/t.php?t=".$data['country']));
+        $temp = trim(file_get_contents("https://schedule.vridhamma.org/t.php?t=".$data['country']));
         $temp = explode("|", $temp);
         $q = "select c_code from dh_country where c_name='".$temp[1]."' limit 1";
         $country = db_query_single($q);
