@@ -88,7 +88,7 @@ if ( isset($_REQUEST['stage']) )
 				}
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
-					$status_opt .= '<td><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';
+					$status_opt .= '<td class="status-row"><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';
 				}				  
 			}
 		}
@@ -145,7 +145,7 @@ if ( isset($_REQUEST['stage']) )
 				 else 
 				 {
 				 	$new_status = 'R-ATTransfer'; 
-				 	$q = "update dh_applicant_lc set  al_recommending='', al_recommending_comments = '$comments' where $auth_field ='$auth'";
+				 	$q = "update dh_applicant_lc set  al_recommending_approved='Transfer to Registrar', al_recommending='', al_recommending_comments = '$comments',  where $auth_field ='$auth'";
 				 	mysql_query($q);
 				 }				   
 			  }
