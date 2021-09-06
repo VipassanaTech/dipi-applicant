@@ -75,7 +75,7 @@ if ($data['country'])
 {
     unset($app['a_state']);
     try {
-        $temp = trim(file_get_contents("https://www.dhamma.in/t.php?t=".$data['country']));
+        $temp = trim(file_get_contents("https://schedule.vridhamma.org/t.php?t=".$data['country']));
         $temp = explode("|", $temp);
         $q = "select c_code from dh_country where c_name='".$temp[1]."' limit 1";
         $country = db_query_single($q);
@@ -87,6 +87,18 @@ if ($data['country'])
     } catch (Exception $e) {
         logit("Failed to get country - ".$e->getMessage()  ) ;   
     }
+}
+
+if (isset($data['photo_id_type']))
+{
+    if ($data['photo_id_type'] == 'Voter ID')
+        $app['a_voter_id'] = $data['photo_id_val'];
+    elseif ($data['photo_id_type'] == 'Passport')
+        $app['a_passport'] = $data['photo_id_val'];
+    elseif ($data['photo_id_type'] == 'Aadhar')
+        $app['a_aadhar'] = $data['photo_id_val'];
+    elseif ($data['photo_id_type'] == 'Pancard')
+        $app['a_pancard'] = $data['photo_id_val'];
 }
 
 try {
