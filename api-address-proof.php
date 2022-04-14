@@ -28,12 +28,13 @@ function simple_crypt( $string, $action = 'e' )
 
 function my_result( $q )
 {
-   $hand = mysql_query( $q ) or logit("my_result: Could not exec query: ".mysql_error()."\n");
+   global $DB_CONN;
+   $hand = mysqli_query($DB_CONN, $q ) or logit("my_result: Could not exec query: ".mysqli_error($DB_CONN)."\n");
    if ( !$hand )
       return 0;
-   if ( mysql_num_rows( $hand ) <= 0  )
+   if ( mysqli_num_rows( $hand ) <= 0  )
       return 0;
-   $r = mysql_fetch_array( $hand );
+   $r = mysqli_fetch_array( $hand );
    return $r[0];
 }
 
@@ -92,7 +93,8 @@ if ( isset($_POST['date']) && ($_POST['date'] <> ''))
    $date = $_POST['date'];
 
 
-$conn = mysql_connect($DB_HOST, $DB_USER, $DB_PASS );
+//$conn = mysql_connect($DB_HOST, $DB_USER, $DB_PASS );
+/*$DB_CONN = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $DB_PORT);
 if ( ! $conn )
 {
    logit("Could not connect to DB ".$_POST['confno']." - ".mysql_error());
@@ -105,7 +107,8 @@ if (! mysql_select_db($DB_NAME) )
    logit("Could not select DB ".$_POST['confno']." - ".mysql_error());
    print "107: No select connection\n";
    exit();
-}
+}*/
+db_connect()
 
 $course = my_result("select c_id from dh_course where c_center='$centre' and c_start='".$date."' and c_deleted=0");
 if ( $course == '' )
@@ -141,7 +144,7 @@ if (!move_uploaded_file($_FILES['img']['tmp_name'], $uploadfile))
 //{
    $upload_uri = str_replace($UPLOAD_DIR, 'private:/', $uploadfile);
    $q = "update dh_applicant set a_photo='$upload_uri' where a_center='$centre' and a_course='$course' and a_conf_no='".$_POST['confno']."'";
-   mysql_query($q);
+   mysqli_query($DB_CONN, $q);
    $applicant_id = my_result("select a_id from dh_applicant where a_center='$centre' and a_course='$course' and a_conf_no='".$_POST['confno']."'");
    $old = getcwd();
    chdir($APP_ROOT);

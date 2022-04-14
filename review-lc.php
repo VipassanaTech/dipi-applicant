@@ -11,41 +11,42 @@ $cat = 0;
 $logged_in = 0;
 if ( isset($_REQUEST['stage']) )
 {
-   if (! mysql_connect($DB_HOST, $DB_USER, $DB_PASS))
+    $DB_CONN = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $DB_PORT);
+   if (! $DB_CONN)
    {
 	  $err = 1;
 	  $err_msg = "Connect Failed!";
    }
 
-   if ( (!$err ) &&  (! mysql_select_db($DB_NAME)) )
+   /*if ( (!$err ) &&  (! mysql_select_db($DB_NAME)) )
    {
 	  $err = 1;
 	  $err_msg = "Select Failed!";
-   }
+   }*/
    //$login = htmlentities(addslashes($_POST['login']));
    $auth = htmlentities(addslashes($_REQUEST['authcode']));
    $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str, a_photo,  ac.*, al.* from dh_applicant left join dh_course on (a_course=c_id) left join dh_applicant_lc al on (a_id=al_applicant) left join dh_applicant_course ac on (a_id=ac_applicant) where  $auth_field ='$auth'";
-   $hand = mysql_query($q);
+   $hand = mysqli_query( $DB_CONN, $q);
    if (!$hand)
    {
 	$err = 1;
 		$err_msg = "Query Failed!";
    }
    $at_reco = "";
-   if ( (!$err) && (mysql_num_rows($hand) > 0) )
+   if ( (!$err) && (mysqli_num_rows($hand) > 0) )
    {
-	   $row = mysql_fetch_array($hand);
+	   $row = mysqli_fetch_array($hand);
 	  	if ($rtype == 'r')
 	   		$at_reco = $row['al_recommending'];
 	   	else
 	   		$at_reco = $row['al_area_at'];	   		
 		$q = "select t_cat from dh_teacher where CONCAT(t_f_name, ' ', t_l_name)='".$at_reco."'";
-		$hand = mysql_query($q);
+		$hand = mysqli_query($DB_CONN, $q);
 		if( $hand )
 		{
-			if (mysql_num_rows($hand) > 0 )
+			if (mysqli_num_rows($hand) > 0 )
 			{
-			$r = mysql_fetch_array($hand);
+			$r = mysqli_fetch_array($hand);
 				if ($r['t_cat'])
 			   $cat = 1;
 			}
@@ -102,11 +103,11 @@ if ( isset($_REQUEST['stage']) )
    {
 		$logged_in = 1;
 		$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where (t_cat=1 or t_full_t=1) order by t_f_name, t_l_name";
-		$hand = mysql_query($q);
+		$hand = mysqli_query($DB_CONN,$q);
 		$area_t = array('<option value="">Select CAT/T</option>');
 		if ($hand)
 		{
-		   while($r = mysql_fetch_array($hand))
+		   while($r = mysqli_fetch_array($hand))
 			   $area_t[] = '<option value="'.$r['name'].'">'.$r['name'].' '.$r['area'].'</option>';
 		}
 			$select_area_t = implode("", $area_t );
@@ -134,19 +135,19 @@ if ( isset($_REQUEST['stage']) )
 					$new_status = 'A-ATReview';
 					$q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved', al_recommending_comments = '$comments' $append where $auth_field ='$auth'";
 					//echo($q);
-					mysql_query($q);
+					mysqli_query($DB_CONN,$q);
 				 }
 				 elseif ($input_status == 'Rejected')
 				 {
 				 	$new_status = 'Rejected-R-AT'; 
 				 	$q = "update dh_applicant_lc set  al_recommending_approved='Rejected', al_recommending_comments = '$reason' where $auth_field ='$auth'";
-				 	mysql_query($q);				 	
+				 	mysqli_query($DB_CONN,$q);				 	
 				 }
 				 else 
 				 {
 				 	$new_status = 'R-ATTransfer'; 
 				 	$q = "update dh_applicant_lc set  al_recommending_approved='Transfer to Registrar', al_recommending='', al_recommending_comments = '$comments',  where $auth_field ='$auth'";
-				 	mysql_query($q);
+				 	mysqli_query($DB_CONN,$q);
 				 }				   
 			  }
 
@@ -157,13 +158,13 @@ if ( isset($_REQUEST['stage']) )
 				 	$new_status = 'Received';
 					$q = "update dh_applicant_lc set  al_area_at_approved='Approved', al_area_at_comments = '$comments' where $auth_field ='$auth'";
 					//echo($q);
-					 mysql_query($q);
+					 mysqli_query($DB_CONN,$q);
 				 }	
 				 else
 				 {
 				 	$new_status = 'Rejected-A-AT'; 
 				 	$q = "update dh_applicant_lc set  al_area_at_approved='Rejected', al_area_at_comments = '$reason' where $auth_field ='$auth'";
-				 	mysql_query($q);
+				 	mysqli_query($DB_CONN,$q);
 				 }
 			  }
 			  $cmd = "/usr/bin/php status-trigger.php $app_id '$new_status'";

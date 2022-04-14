@@ -7,32 +7,33 @@ $err_msg = '';
 $logged_in = 0;
 if ( isset($_REQUEST['stage']) )
 {
-   if (! mysql_connect($DB_HOST, $DB_USER, $DB_PASS))
+    $DB_CONN = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $DB_PORT);
+   if (! $DB_CONN)
    {
       $err = 1;
       $err_msg = "Connect Failed!";
    }
-
-   if ( (!$err ) &&  (! mysql_select_db($DB_NAME)) )
+   mysqli_set_charset($DB_CONN, 'utf8mb4');
+   /*if ( (!$err ) &&  (! mysql_select_db($DB_NAME)) )
    {
       $err = 1;
       $err_msg = "Select Failed!";
-   }
+   }*/
    $login = htmlentities(addslashes($_REQUEST['login']));
    $append = '';
    if ($login <> '')
       $append = " a_login = '$login' and ";
    $auth = htmlentities(addslashes($_REQUEST['authcode']));
    $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str from dh_applicant left join dh_course on (a_course=c_id) where $append a_auth_code='$auth'";
-   $hand = mysql_query($q);
+   $hand = mysqli_query($DB_CONN, $q);
    if (!$hand)
    {
 	$err = 1;
         $err_msg = "Query Failed!";
    }
-   if ( (!$err) && (mysql_num_rows($hand) > 0) )
+   if ( (!$err) && (mysqli_num_rows($hand) > 0) )
    {
-       $row = mysql_fetch_array($hand);
+       $row = mysqli_fetch_array($hand);
        $start = strtotime("+1 day", strtotime($row['c_start'])); //strtotime($row['c_start']);
        if ( time() > $start )
        {
@@ -113,9 +114,9 @@ if ( isset($_REQUEST['stage']) )
 	      if ( $input_status == 'Clarification-Response' )
 	      {
  	          $msg = htmlentities(addslashes($_POST['msg']));
-            mysql_set_charset('utf8');
+            //mysqli_set_charset('utf8');
 	          $q = "insert into dh_applicant_clarification( ac_app, ac_msg, ac_file) VALUES ('".$row['a_id']."', '$msg', '$file')";
- 	          mysql_query($q);
+ 	          mysqli_query($DB_CONN, $q);
 	      }
 	      $cmd = "/usr/bin/php status-trigger.php $app_id '$input_status'";
 	      exec($cmd);
