@@ -38,7 +38,7 @@ function my_result( $q )
 }
 
 
-function logit($data)
+function logit1($data)
 {
    global $LOG;
    $fp = fopen( $LOG , "a+");
@@ -107,7 +107,7 @@ if (! mysql_select_db($DB_NAME) )
    exit();
 }
 
-$course = my_result("select c_id from dh_course where c_center='$centre' and c_start='".$date."'");
+$course = my_result("select c_id from dh_course where c_center='$centre' and c_start='".$date."' and c_deleted=0");
 if ( $course == '' )
    $course =  date("Y-m-d");
 

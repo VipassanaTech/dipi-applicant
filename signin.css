@@ -58,6 +58,14 @@ body {
   text-align: left;
 }
 
+.course-details {
+  table-layout: fixed;
+}
+
+.status-row {
+  width: 33.33%;
+}
+
 .areat-select {
   width: 450px;
 }
@@ -69,6 +77,10 @@ body {
 
   table {
     table-layout: fixed;
+  }
+
+  .course-details {
+    table-layout: unset;
   }
 
 }

@@ -5,7 +5,7 @@ include_once("constants.inc");
 $err = 0;
 $err_msg = '';
 $logged_in = 0;
-if ( isset($_POST['stage']) )
+if ( isset($_REQUEST['stage']) )
 {
    if (! mysql_connect($DB_HOST, $DB_USER, $DB_PASS))
    {
@@ -18,9 +18,12 @@ if ( isset($_POST['stage']) )
       $err = 1;
       $err_msg = "Select Failed!";
    }
-   $login = htmlentities(addslashes($_POST['login']));
-   $auth = htmlentities(addslashes($_POST['authcode']));
-   $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str from dh_applicant left join dh_course on (a_course=c_id) where a_login='$login' and a_auth_code='$auth'";
+   $login = htmlentities(addslashes($_REQUEST['login']));
+   $append = '';
+   if ($login <> '')
+      $append = " a_login = '$login' and ";
+   $auth = htmlentities(addslashes($_REQUEST['authcode']));
+   $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str from dh_applicant left join dh_course on (a_course=c_id) where $append a_auth_code='$auth'";
    $hand = mysql_query($q);
    if (!$hand)
    {
@@ -64,13 +67,13 @@ if ( isset($_POST['stage']) )
 	$err = 1;
 	$err_msg = "Invalid Login Details!";
    }
-   if ( (!$err) && ($_POST['stage'] == 1) )
+   if ( (!$err) && ($_REQUEST['stage'] == 1) )
    {
 	$logged_in = 1;
    }
-   elseif( (!$err)  && ($_POST['stage'] == 2) )
+   elseif( (!$err)  && ($_REQUEST['stage'] == 2) )
    {
-	$input_status = $_POST['status'];
+	$input_status = $_REQUEST['status'];
 	$file = '';
 	if ( in_array($input_status, array('Cancelled', 'Confirmed', 'Expected', 'Clarification-Response'))  )
 	{
@@ -133,13 +136,13 @@ if ( isset($_POST['stage']) )
 
     <title>Applicant Action</title>
 
-    <link href="bootstrap.min.css" rel="stylesheet">
-    <link href="signin.css" rel="stylesheet">
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/signin.css" rel="stylesheet">
     <style>
 	.message{ color: #ff0000; }
     </style>
-    <script src="jquery.min.js"></script>
-    <script src="bootstrap.min.js"></script>
+    <script src="/jquery.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
   </head>
 
   <body class="text-center">
