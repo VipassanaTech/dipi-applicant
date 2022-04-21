@@ -1,5 +1,5 @@
 <?php
-
+require_once("vendor/autoload.php");
 include_once("constants.inc");
 include_once("dana-s3.inc");
 
