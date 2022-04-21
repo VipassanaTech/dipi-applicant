@@ -1,6 +1,7 @@
 <?php
 
 include_once("constants.inc");
+include_once("dana-s3.inc");
 
 $err = 0;
 $err_msg = '';
@@ -99,10 +100,12 @@ if ( isset($_REQUEST['stage']) )
 
 		if (!$err)
 		{
-		   if ( !is_dir($target_dir) )
+		   /*if ( !is_dir($target_dir) )
 		      mkdir($target_dir, 0770, true);
 		   move_uploaded_file($_FILES["doc"]["tmp_name"], $target_file);
+           */
 		   $file = "private:///clarification/".$row['a_center']."/".$row['a_course']."/".$row['a_id']."-".$tstamp.".pdf" ;
+           s3_put_file('vri-dipi', $_FILES["doc"]["tmp_name"], str_replace("private:///", '', $file));
 		}
 	   }
 	   if ( !$err )
