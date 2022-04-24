@@ -1,6 +1,7 @@
 <?php
-
+require_once("vendor/autoload.php");
 include_once("constants.inc");
+include_once("dana-s3.inc");
 
 $err = 0;
 $err_msg = '';
@@ -69,17 +70,23 @@ if ( isset($_REQUEST['stage']) )
 				$photo = '';
 				if ($row['a_photo'])
 				{
-					$fname = str_replace('private://', '/dhamma/web/files/dipi/', $row['a_photo']);
+					//$fname = str_replace('private://', '/dhamma/web/files/dipi/', $row['a_photo']);
+					$fname = str_replace('private://', '', $row['a_photo']);
 					//echo "file is $fname";
-					if (file_exists($fname))
-					{
+					//if (file_exists($fname))
+					//{
+					$ret = s3_get_file('vri-dipi', $fname, 'stream');
+					if (!$ret['success'])
+						watchdog('S3Photo', $ret['message']);
 						 $ext = strtolower(pathinfo($fname, PATHINFO_EXTENSION));
 						if (in_array($ext, array('jpg', 'jpeg')))
 						   $mime_type = "image/jpeg";
 						else
 						   $mime_type = "image/png";
-						$photo = base64_encode(file_get_contents($fname));
-					}
+
+						//$photo = base64_encode(file_get_contents($fname));
+						$photo = base64_encode($ret['data']);
+					//}
 				}
 				$status = array(); 
 				$status['Rejected'] = 'Reject Application';
