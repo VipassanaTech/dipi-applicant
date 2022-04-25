@@ -10,6 +10,7 @@ if ($rtype == 'r') {$auth_field = 'al_recommending_auth'; $submit_url = "/r-revi
 if ($rtype == 'a') {$auth_field = 'al_area_auth'; $submit_url = "/a-review" ; }
 $cat = 0;
 $logged_in = 0;
+$already_submitted = 0; 
 if ( isset($_REQUEST['stage']) )
 {
     $DB_CONN = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $DB_PORT);
@@ -93,6 +94,10 @@ if ( isset($_REQUEST['stage']) )
 				$status['Approved'] = 'Approve Application';
 				if ($rtype == 'r') {
 					$status['Transfer'] = 'Transfer to Registrar';
+					if (strtolower($row['a_status']) <> 'r-atreview')
+					{
+						$already_submitted = 1;
+					}
 				}
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
@@ -310,6 +315,7 @@ if ( isset($_REQUEST['stage']) )
 				   if ($row[$f] == '1')
 						print "<tr><td>".$l."</td><td>Yes</td></tr>";
 	  ?>
+	  <?php if (!$already_submitted): ?>
 	  <?php if ($rtype == 'a') { ?>
 	  	<tr>
 	  		<td colspan="3"><b>Recommending AT Comments</b></td>
@@ -354,6 +360,10 @@ if ( isset($_REQUEST['stage']) )
 	</table>
 	 <?php endif; ?>
 <!--      <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p> -->
+	<?php endif; ?>
+	<?php if ($already_submitted): ?>
+		<h1 class="h3 mb-3 font-weight-normal">Recommending AT Review already submitted</h1>
+	<?php endif; ?>	
 	</form>
   </body>
 </html>
