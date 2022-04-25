@@ -2,7 +2,7 @@
 
 include_once('vendor/autoload.php');
 include_once("constants.inc");
-
+include_once("dana-s3.inc");
 
 $PHOTO_DIR = "/dhamma/web/files/dipi/photo-id";
 
@@ -144,16 +144,20 @@ if ($app['a_city'] <> '')
 
 
 $app_id = db_exec('dh_applicant', $app);
-if ($data['photo__data'] <> '')
+if ( isset($data['_photo']['data']) && ($data['_photo']['data'] <> ''))
 {
-    $temp = base64_decode($data['photo__data']);
-    $path = pathinfo($data['photo__name']);
+    $temp = base64_decode($data['_photo']['data']);
+    $path = pathinfo($data['_photo']['name']);
     $dir = $PHOTO_DIR."/".$data['centre']."/".$data['course'];
     $fname = $dir."/app-".$app_id.".".$path['extension'];
-    if (!is_dir($dir))
-        mkdir($dir, 0755, true);
-    file_put_contents($fname, $temp);
+    /*if (!is_dir($dir))
+        mkdir($dir, 0755, true);*/
+    $file_local = tempnam("/var/dana", "photo-");
+    file_put_contents($file_local, $temp);
     $ff['a_photo'] = "private://photo-id/".$data['centre']."/".$data['course']."/app-$app_id.".$path['extension'];
+    $ret = s3_put_file('vri-dipi', $file_local, str_replace("private://", '', $ff['a_photo']));
+    if (!$ret['success'])
+        logit($ret['messsage']);
     db_exec('dh_applicant', $ff, ' a_id='.$app_id );
 }
 
