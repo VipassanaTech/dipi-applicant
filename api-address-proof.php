@@ -111,7 +111,7 @@ if (! mysql_select_db($DB_NAME) )
    print "107: No select connection\n";
    exit();
 }*/
-db_connect()
+db_connect();
 
 $course = my_result("select c_id from dh_course where c_center='$centre' and c_start='".$date."' and c_deleted=0");
 if ( $course == '' )
