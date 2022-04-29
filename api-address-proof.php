@@ -1,6 +1,9 @@
 <?php
 
+include_once('vendor/autoload.php');
 include_once "constants.inc";
+include_once("dana-s3.inc");
+
 
 $LOG = "/var/log/$APP-photo-id.log";
 $UPLOAD_DIR = "/dhamma/web/files/$APP";
@@ -117,11 +120,12 @@ if ( $course == '' )
 $dir = "photo-id/$centre/$course";
 //$date_dir = date('Y-m-d').'-TO-'.date('Y-m-d', strtotime('+11 day'));;
 
+/*
 if ( !file_exists( $UPLOAD_DIR.'/'.$dir ) )
 {
     mkdir( $UPLOAD_DIR.'/'.$dir, 0755, true);
 }
-
+*/
 
 $uploadfile = $UPLOAD_DIR.'/'.$dir.'/'.$_POST['confno'];
 $ext = '.jpg';
@@ -133,16 +137,24 @@ $temp = $uploadfile; $i=2;
 */
 
 $uploadfile = $temp.$ext;
+$upload_uri = str_replace($UPLOAD_DIR, 'private:/', $uploadfile);
+$ret = s3_put_file('vri-dipi', $_FILES['img']['tmp_name'], str_replace("private://", '', $upload_uri));
+if (!$ret['success'])
+{
+    logit("300: Could not upload file for ".$_POST['confno']);
+    echo "300: Could not upload file\n";
+   logit($ret['messsage']);
+}
 
+/*
 if (!move_uploaded_file($_FILES['img']['tmp_name'], $uploadfile))
 {
     logit("300: Could not upload file for ".$_POST['confno']);
     echo "300: Could not upload file\n";
 }
-
+*/
 //if ( ($i <= 2) && (is_numeric($course)) )
 //{
-   $upload_uri = str_replace($UPLOAD_DIR, 'private:/', $uploadfile);
    $q = "update dh_applicant set a_photo='$upload_uri' where a_center='$centre' and a_course='$course' and a_conf_no='".$_POST['confno']."'";
    mysqli_query($DB_CONN, $q);
    $applicant_id = my_result("select a_id from dh_applicant where a_center='$centre' and a_course='$course' and a_conf_no='".$_POST['confno']."'");
