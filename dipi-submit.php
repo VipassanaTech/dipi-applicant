@@ -68,6 +68,10 @@ foreach ($data as $key => $value)
                     $app[str_replace("ae_desc", "a", $key)] = 1;
             }
         }
+        else
+        {
+            $app_ae[$key] = $value;
+        }
     }
 }
 
