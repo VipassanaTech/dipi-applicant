@@ -75,6 +75,9 @@ foreach ($data as $key => $value)
     }
 }
 
+if ($app['a_friend_family_details'])
+    $app['a_friend_family']=1;
+
 if ($data['country'])
 {
     unset($app['a_state']);
