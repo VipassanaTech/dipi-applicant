@@ -58,7 +58,7 @@ if ( isset($_REQUEST['stage']) )
 		if (strtolower($row['a_status']) == 'clarification')
 		   $status['Clarification-Response'] = 'Send Clarification Response';
 		$status['Cancelled'] = 'Cancel my Application';
-		$status_opt = '';
+		$status_opt = '<option selected="true" disabled="disabled">Select</option>';
 		foreach( $status as $k => $v )
 		  $status_opt .= '<option value="'.$k.'">'.$v.'</option>';
 	    }
