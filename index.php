@@ -58,7 +58,7 @@ if ( isset($_REQUEST['stage']) )
 		if (strtolower($row['a_status']) == 'clarification')
 		   $status['Clarification-Response'] = 'Send Clarification Response';
 		$status['Cancelled'] = 'Cancel my Application';
-		$status_opt = '';
+		$status_opt = '<option selected="true" disabled="disabled" value="">Please Select</option>';
 		foreach( $status as $k => $v )
 		  $status_opt .= '<option value="'.$k.'">'.$v.'</option>';
 	    }
@@ -184,7 +184,7 @@ if ( isset($_REQUEST['stage']) )
 	<td colspan=2><b>I would like to </b></td>
       </tr>
       <tr>
-       <td colspan=2><select name="status" class="form-control"><?php echo $status_opt;?></select></td>
+       <td colspan=2><select name="status" class="form-control" required><?php echo $status_opt;?></select></td>
       </tr>
       <?php if (strtolower($row['a_status']) == 'clarification'): ?>
       <tr>
