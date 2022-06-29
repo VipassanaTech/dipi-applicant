@@ -42,7 +42,7 @@ if ( isset($_REQUEST['stage']) )
 	   		$at_reco = $row['al_recommending'];
 	   	else
 	   		$at_reco = $row['al_area_at'];	   		
-		$q = "select t_cat from dh_teacher where CONCAT(t_f_name, ' ', t_l_name)='".$at_reco."'";
+		$q = "select t_cat from dh_teacher where t_status='Active' and CONCAT(t_f_name, ' ', t_l_name)='".$at_reco."'";
 		$hand = mysqli_query($DB_CONN, $q);
 		if( $hand )
 		{
@@ -114,7 +114,7 @@ if ( isset($_REQUEST['stage']) )
    if ( (!$err) && ($_REQUEST['stage'] == 1) )
    {
 		$logged_in = 1;
-		$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where (t_cat=1 or t_full_t=1) order by t_f_name, t_l_name";
+		$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where t_status='Active' and (t_cat=1 or t_full_t=1) order by t_f_name, t_l_name";
 		$hand = mysqli_query($DB_CONN,$q);
 		$area_t = array('<option value="">Select CAT/T</option>');
 		if ($hand)
