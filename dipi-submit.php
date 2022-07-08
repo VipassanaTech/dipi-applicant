@@ -151,6 +151,20 @@ if ($app['a_city'] <> '')
     }
 }
 
+if ($app['a_f_name'] <> '')
+    $app['a_f_name'] = ucwords(strtolower(trim($app['a_f_name'])));
+
+if ($app['a_m_name'] <> '')
+    $app['a_m_name'] = ucwords(strtolower(trim($app['a_m_name'])));
+
+if ($app['a_l_name'] <> '')
+    $app['a_l_name'] = ucwords(strtolower(trim($app['a_l_name'])));
+
+if ($app['a_email'] <> '')
+    $app['a_email'] = strtolower(trim($app['a_email']));
+
+if ($app['a_phone_mobile'] <> '')
+    $app['a_phone_mobile'] = trim($app['a_phone_mobile']);
 
 $app_id = db_exec('dh_applicant', $app);
 if ( isset($data['_photo']['data']) && ($data['_photo']['data'] <> ''))
