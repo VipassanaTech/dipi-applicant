@@ -374,7 +374,7 @@ if ( isset($_REQUEST['stage']) )
 	<?php endif; ?>	
 
 	<div class='lc-footer'>
-		<br><br><br>
+		<br>
 		<h2>Please Login to Dipi AT Portal for details.</h2>
 
 		<p>As part of the Long course approval system, VRI has launched the DIPI AT Portal for all ATs to access Address Book, view and process Long Course forms assigned to them by students.</p>
@@ -385,9 +385,9 @@ if ( isset($_REQUEST['stage']) )
 		<p>Step-1: Click on 'Request new password' link</p>
 		<p>Step-2: Enter the username - this is your AT code with .m or .f (eg: if AT Code is AATP and gender is Male then username will be aatp.m)</p>
 		<p>Step-3: You will get a temporary password by email. Log in using AT code and this temporary password.</p> 
-		<p>Step-4: After you log in, change the password by going to My Account - Edit and Change password</p><br>
+		<p>Step-4: After you log in, change the password by going to My Account - Edit and Change password</p>
 		<h3>Using the AT portal</h3>
-		<p>AT portal has following options.</p><br>
+		<p>AT portal has following options.</p>
 		<p>1: Reviews Assigned to me<br>
 		<i>(This will show all Long Course forms assigned to you as Recommending/Area AT. By clicking on Details link, you can see the entire history of the application and its approval or rejection or tranfer application to center registrar)</i></p>
 		<p>2: All Reviews<br>
@@ -395,7 +395,7 @@ if ( isset($_REQUEST['stage']) )
 		<p>3: My Profile<br>
 		<i>(This feature allows you to edit your Address, Phone number, email ID etc)</i></p>
 		<p>4: AT Address Book<br>
-		<i>(Currently this shows the complete AT address book, download feature will be offered later)</i></p><br><br>	
+		<i>(Currently this shows the complete AT address book, download feature will be offered later)</i></p><br>	
 		<p>Please feel free to contact dipi@vridhamma.org for any assistance.</p><br>
 		<br>
 		<br></div>
