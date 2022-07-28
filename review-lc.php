@@ -64,7 +64,7 @@ if ( isset($_REQUEST['stage']) )
 			if ( !in_array(strtolower($row['a_status']), array('r-atreview', 'a-atreview', 'errors')) )
 			{
 				$err = 1;
-				$err_msg = "Invalid Status!";
+				$err_msg = "Currently application is not in Recommending/Area review!";
 			}
 			else
 			{
@@ -207,6 +207,12 @@ if ( isset($_REQUEST['stage']) )
 	.message{ color: #ff0000; }
 		.course-details{ width: 100%; }
 		.photo{ width: 25%; }
+
+		.lc-footer {
+			text-align:  left;
+			margin-left: 5px;
+		}
+
 	</style>
 	<script src="/jquery.min.js"></script>
 	<script src="/bootstrap.min.js"></script>
@@ -252,10 +258,12 @@ if ( isset($_REQUEST['stage']) )
 	 <?php if (!$logged_in): ?>
 	 <?php if ($err_msg): ?><h2 class="h3 mb-3 font-weight-normal message"><?php echo $err_msg; ?></h2> <?php endif; ?>
 	 <?php if ((isset($_REQUEST['stage']) && ($_REQUEST['stage'] < 2) ) || (!isset($_REQUEST['stage']))): ?>
+	 <!--
 	  <label for="inputPassword" class="sr-only">Auth Code</label>
 	  <input type="text" name="authcode" id="inputPassword" class="form-control" placeholder="Auth Code" required autofocus>
 	  <input type="hidden" name="stage" value="1">
 	  <button class="btn btn-lg btn-primary btn-block" type="submit">Review</button>
+	  -->
 	  <?php endif; ?>
 	 <?php else: ?>
 	  <input type="hidden" name="stage" value="2">
@@ -364,10 +372,33 @@ if ( isset($_REQUEST['stage']) )
 	<?php if ($already_submitted): ?>
 		<h1 class="h3 mb-3 font-weight-normal">Recommending AT Review already submitted</h1>
 	<?php endif; ?>	
+
+	<div class='lc-footer'>
+		<br><br><br>
+		<h2>Please Login to Dipi AT Portal for details.</h2>
+
+		<p>As part of the Long course approval system, VRI has launched the DIPI AT Portal for all ATs to access Address Book, view and process Long Course forms assigned to them by students.</p>
+
+		<h3>To use the AT portal, please go to https://dipi.vridhamma.org</h3>
+
+		<h3>When using for the first time</h3>
+		<p>Step-1: Click on 'Request new password' link</p>
+		<p>Step-2: Enter the username - this is your AT code with .m or .f (eg: if AT Code is AATP and gender is Male then username will be aatp.m)</p>
+		<p>Step-3: You will get a temporary password by email. Log in using AT code and this temporary password.</p> 
+		<p>Step-4: After you log in, change the password by going to My Account - Edit and Change password</p><br>
+		<h3>Using the AT portal</h3>
+		<p>AT portal has following options.</p><br>
+		<p>1: Reviews Assigned to me<br>
+		<i>(This will show all Long Course forms assigned to you as Recommending/Area AT. By clicking on Details link, you can see the entire history of the application and its approval or rejection or tranfer application to center registrar)</i></p>
+		<p>2: All Reviews<br>
+		<i>(This feature is for Long Course admins and will show all applications to that Centre and status of each application)</i></p>
+		<p>3: My Profile<br>
+		<i>(This feature allows you to edit your Address, Phone number, email ID etc)</i></p>
+		<p>4: AT Address Book<br>
+		<i>(Currently this shows the complete AT address book, download feature will be offered later)</i></p><br><br>	
+		<p>Please feel free to contact dipi@vridhamma.org for any assistance.</p><br>
+		<br>
+		<br></div>
 	</form>
   </body>
 </html>
-
-
-
-
