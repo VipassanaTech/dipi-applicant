@@ -132,6 +132,16 @@ if ( isset($_REQUEST['stage']) )
 		{
 		   if ( !$err )
 		   {
+		   	$q = "select td_key, td_val1 from dh_type_detail where td_type='COURSE-APPLICANT'";
+		   	$res = mysqli_fetch_all(mysqli_query($DB_CONN,$q), MYSQLI_ASSOC);
+		   	$user_ids = array();
+		   	if($res)
+		   	{
+			   	foreach ($res as $r)
+			   		$user_ids[$r['td_key']] = $r['td_val1'];
+		   	}
+
+
 			  $area_teacher = addslashes($_POST['areat']);
 			  $err_msg = "Thank you, your review has been submitted";
 			  $logged_in = 0;
@@ -142,6 +152,12 @@ if ( isset($_REQUEST['stage']) )
 			  $new_status = '';
 			  if ($rtype == 'r')
 			  {
+			  	if ($user_ids['COURSE-R-AT-UID'])
+			  	{
+			  		$q = "update dh_applicant left join dh_applicant_lc al on (a_id=al_applicant)  set a_updated=CURRENT_TIMESTAMP(), a_updated_by=".$user_ids['COURSE-R-AT-UID']." where  $auth_field ='$auth'";
+					//echo($q);
+					mysqli_query($DB_CONN,$q);
+			  	}
 				 if ($input_status == 'Approved')
 				 {
 					$new_status = 'A-ATReview';
@@ -165,6 +181,12 @@ if ( isset($_REQUEST['stage']) )
 
 				elseif ($rtype == 'a') 
 			  {
+			  	if ($user_ids['COURSE-A-AT-UID'])
+			  	{
+			  		$q = "update dh_applicant left join dh_applicant_lc al on (a_id=al_applicant)  set a_updated=CURRENT_TIMESTAMP(), a_updated_by=".$user_ids['COURSE-A-AT-UID']." where  $auth_field ='$auth'";
+					//echo($q);
+					mysqli_query($DB_CONN,$q);
+			  	}
 				 if ($input_status == 'Approved')
 				 {
 				 	$new_status = 'Received';
