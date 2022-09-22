@@ -152,14 +152,18 @@ if ( isset($_REQUEST['stage']) )
   <body class="text-center">
     <form class="form-signin" method="POST" action="<?php echo htmlentities($_SERVER['PHP_SELF']);?>" enctype="multipart/form-data">
      <?php if (!$logged_in): ?>
-      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+      <!--
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        -->
      <?php if ($err_msg): ?><h2 class="h3 mb-3 font-weight-normal message"><?php echo $err_msg; ?></h2> <?php endif; ?>
+     <!--
       <label for="inputEmail" class="sr-only">Login</label>
       <input type="text" name="login" id ="inputEmail" class="form-control" placeholder="Auth Login" required autofocus>
       <label for="inputPassword" class="sr-only">Auth Code</label>
       <input type="text" name="authcode" id="inputPassword" class="form-control" placeholder="Auth Code" required>
       <input type="hidden" name="stage" value="1">
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      -->
      <?php else: ?>
       <input type="hidden" name="stage" value="2">
       <input type="hidden" name="login" value="<?php echo $login; ?>">
