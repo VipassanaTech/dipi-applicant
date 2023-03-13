@@ -146,8 +146,8 @@ if ( isset($_REQUEST['stage']) )
 			  $err_msg = "Thank you, your review has been submitted";
 			  $logged_in = 0;
 			  chdir($APP_ROOT);
-			  $comments = trim($_POST['comments']);
-			  $reason = trim($_POST['reason']);
+			  $comments = addslashes(trim($_POST['comments']));
+			  $reason = addslashes(trim($_POST['reason']));
 			  $app_id = $row['a_id'];
 			  $new_status = '';
 			  if ($rtype == 'r')
