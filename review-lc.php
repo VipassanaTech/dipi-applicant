@@ -101,7 +101,7 @@ if ( isset($_REQUEST['stage']) )
 				}
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
-					$status_opt .= '<td class="status-row"><label><input type="radio" name="status" value="'.$k.'">'.$v.'</label></td>';
+					$status_opt .= '<td class="status-row"><label><input type="radio" name="status" value="'.$k.' " required="required">'.$v.'</label></td>';
 				}				  
 			}
 		}
@@ -161,9 +161,12 @@ if ( isset($_REQUEST['stage']) )
 				 if ($input_status == 'Approved')
 				 {
 					$new_status = 'A-ATReview';
-					$q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved', al_recommending_comments = '$comments' $append where $auth_field ='$auth'";
-					//echo($q);
-					mysqli_query($DB_CONN,$q);
+          if ($area_teacher)
+          {
+            $q = "update dh_applicant_lc set al_area_at='$area_teacher', al_recommending_approved='Approved', al_recommending_comments = '$comments' $append where $auth_field ='$auth'";
+            mysqli_query($DB_CONN,$q);
+          }
+
 				 }
 				 elseif ($input_status == 'Rejected')
 				 {
@@ -246,7 +249,7 @@ if ( isset($_REQUEST['stage']) )
 			$('.areat-select').select2();
 
 			var val = 'Approved';
-			$("input[name=status][value="+val+"]").prop('checked', true);
+			//$("input[name=status][value="+val+"]").prop('checked', true);
 			
 			$('input:radio[name="status"]').change(
 	    function(){
@@ -355,7 +358,7 @@ if ( isset($_REQUEST['stage']) )
 	  	</tr>
 	  <?php }?>	  
 		<tr>
-			<td colspan="3"><b>I would like to </b></td>
+			<td colspan="3"><b>Click on one of the below option to select it. </b></td>
 		</tr>
 		<tr>
 		<?php
@@ -406,8 +409,8 @@ if ( isset($_REQUEST['stage']) )
 		<h3>When using for the first time</h3>
 		<p>Step-1: Click on 'Request new password' link</p>
 		<p>Step-2: Enter the username - this is your AT code with .m or .f (eg: if AT Code is AATP and gender is Male then username will be aatp.m)</p>
-		<p>Step-3: You will get a temporary password by email. Log in using AT code and this temporary password.</p> 
-		<p>Step-4: After you log in, change the password by going to My Account - Edit and Change password</p>
+		<p>Step-3: An email with one-time-login link will be sent to registered email, click on link to one time login to dipi.</p>
+		<p>Step-4: Once logged in, change the password by entering password in password and confirm password field and clicking save button.</p>
 		<h3>Using the AT portal</h3>
 		<p>AT portal has following options.</p>
 		<p>1: Reviews Assigned to me<br>
