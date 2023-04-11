@@ -101,7 +101,7 @@ if ( isset($_REQUEST['stage']) )
 				}
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
-					$status_opt .= '<td class="status-row"><label><input type="radio" name="status" value="'.$k.' " required="required">'.$v.'</label></td>';
+					$status_opt .= '<td class="status-row"><label><input type="radio" name="status" value="'.$k.'" required="required">'.$v.'</label></td>';
 				}				  
 			}
 		}
