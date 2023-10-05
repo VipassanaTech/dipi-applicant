@@ -184,7 +184,7 @@ if ( isset($data['_photo']['data']) && ($data['_photo']['data'] <> ''))
     db_exec('dh_applicant', $ff, ' a_id='.$app_id );
 }
 
-if(isset($app_al['al_at_year']) && $app_al['al_at_year'])
+if(isset($app_al['al_at_year']) && $app_al['al_at_year'] > 0)
   $app_ac['ac_teacher'] = 1;
 
 //dh_send_letter('applicant', $app_id, $app['a_status'] );
