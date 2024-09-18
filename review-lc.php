@@ -27,7 +27,7 @@ if ( isset($_REQUEST['stage']) )
    }*/
    //$login = htmlentities(addslashes($_POST['login']));
    $auth = htmlentities(addslashes($_REQUEST['authcode']));
-   $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str, a_photo,  ac.*, al.* from dh_applicant left join dh_course on (a_course=c_id) left join dh_applicant_lc al on (a_id=al_applicant) left join dh_applicant_course ac on (a_id=ac_applicant) where  $auth_field ='$auth'";
+   $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str, a_photo,  ac.*, al.*, td_key from dh_applicant left join dh_course on (a_course=c_id) left join dh_applicant_lc al on (a_id=al_applicant) left join dh_applicant_course ac on (a_id=ac_applicant) left join dh_type_detail on c_course_type=td_id where  $auth_field ='$auth'";
    $hand = mysqli_query( $DB_CONN, $q);
    if (!$hand)
    {
@@ -38,6 +38,7 @@ if ( isset($_REQUEST['stage']) )
    if ( (!$err) && (mysqli_num_rows($hand) > 0) )
    {
 	   $row = mysqli_fetch_array($hand);
+     $course_type = $row['td_key'];
 	  	if ($rtype == 'r')
 	   		$at_reco = $row['al_recommending'];
 	   	else
@@ -115,8 +116,16 @@ if ( isset($_REQUEST['stage']) )
    {
 		$logged_in = 1;
 		$q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where t_status='Active' and (t_cat=1 or t_full_t=1 or t_lc_area=1) order by t_f_name, t_l_name";
+    $area_t = array('<option value="">Select CAT/T</option>');
+
+    if($course_type == '60-DayOSC')
+    {
+      $q = "select CONCAT(t_f_name, ' ', t_l_name) as 'name', IF(t_area != '', CONCAT('(',t_area,')'), '') as 'area' from dh_teacher where t_status='Active' and t_cat=1 order by t_f_name, t_l_name";
+      $area_t = array('<option value="">Select CAT</option>');
+    }
+
 		$hand = mysqli_query($DB_CONN,$q);
-		$area_t = array('<option value="">Select CAT/T</option>');
+
 		if ($hand)
 		{
 		   while($r = mysqli_fetch_array($hand))
