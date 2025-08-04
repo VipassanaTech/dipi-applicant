@@ -150,7 +150,7 @@ if ( isset($_REQUEST['stage']) )
   </head>
 
   <body class="text-center">
-    <form class="form-signin" method="POST" action="<?php echo htmlentities($_SERVER['PHP_SELF']);?>" enctype="multipart/form-data">
+    <form class="form-signin" method="POST" action="<?php echo htmlentities($_SERVER['PHP_SELF']);?>" enctype="multipart/form-data" onsubmit="this.submitButton.disabled = true;">
      <?php if (!$logged_in): ?>
       <!--
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
@@ -200,7 +200,7 @@ if ( isset($_REQUEST['stage']) )
       </tr>
      <?php endif; ?>
       <tr>
-      <td colspan=2><button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button></td>
+      <td colspan=2><button class="btn btn-lg btn-primary btn-block" type="submit" name="submitButton">Submit</button></td>
       </tr>
     </tbody>
     </table>
