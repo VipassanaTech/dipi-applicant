@@ -27,7 +27,7 @@ if ( isset($_REQUEST['stage']) )
    }*/
    //$login = htmlentities(addslashes($_POST['login']));
    $auth = htmlentities(addslashes($_REQUEST['authcode']));
-   $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_id, a_center, a_course, c_name, c_start, a_status,a_city_str, a_photo,  ac.*, al.*, td_key from dh_applicant left join dh_course on (a_course=c_id) left join dh_applicant_lc al on (a_id=al_applicant) left join dh_applicant_course ac on (a_id=ac_applicant) left join dh_type_detail on c_course_type=td_id where  $auth_field ='$auth'";
+   $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_type, a_id, a_center, a_course, c_name, c_start, a_status,a_city_str, a_photo,  ac.*, al.*, td_key from dh_applicant left join dh_course on (a_course=c_id) left join dh_applicant_lc al on (a_id=al_applicant) left join dh_applicant_course ac on (a_id=ac_applicant) left join dh_type_detail on c_course_type=td_id where  $auth_field ='$auth'";
    $hand = mysqli_query( $DB_CONN, $q);
    if (!$hand)
    {
@@ -38,6 +38,12 @@ if ( isset($_REQUEST['stage']) )
    if ( (!$err) && (mysqli_num_rows($hand) > 0) )
    {
 	   $row = mysqli_fetch_array($hand);
+
+	    if ($row['a_type'] == "Student")
+        	$row['a_type'] = '<b style="color:green;">SITTING</b>';
+    	else
+        	$row['a_type'] = '<b style="color:red;">SERVING</b>';
+
      $course_type = $row['td_key'];
 	  	if ($rtype == 'r')
 	   		$at_reco = $row['al_recommending'];
@@ -306,6 +312,10 @@ if ( isset($_REQUEST['stage']) )
 	 <?php if ($err_msg): ?><h2 class="h3 mb-3 font-weight-normal message"><?php echo $err_msg; ?></h2> <?php endif; ?>
   <table class="table table-hover">
 	<tbody>
+	  <tr class="align-left">
+	   <td>Application Type</td>
+	   <td colspan="2"><?php echo $row['a_type']?></td>
+	  </tr>
 	  <tr class="align-left">
 	   <td>Course</td>
 	   <td colspan="2"><?php echo $row['c_name']?></td>
