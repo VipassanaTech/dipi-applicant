@@ -67,8 +67,36 @@ if ( isset($_REQUEST['stage']) )
    else
    {
 	$err = 1;
-	$err_msg = "Invalid Login Details!";
+	$err_msg = "Invalid URL!";
    }
+
+   if( (!$err)  && ($_REQUEST['stage'] == 2) )
+   {
+        if( (strtolower($_REQUEST['status']) == 'confirmed') && !(strtolower($row['a_status']) == 'preconfirmation'))
+        {
+            $err = 1;
+            $err_msg = "Invalid Status!";
+        }
+
+        if( (strtolower($_REQUEST['status']) == 'expected') && !(strtolower($row['a_status']) == 'reconfirmation') )
+        {
+            $err = 1;
+            $err_msg = "Invalid Status!";
+        }
+
+        if( (strtolower($_REQUEST['status']) == 'clarification-response') && !(strtolower($row['a_status']) == 'clarification') )
+        {
+            $err = 1;
+            $err_msg = "Invalid Status!";
+        }
+
+        if( (strtolower($_REQUEST['status']) == 'cancelled') && in_array(strtolower($row['a_status']), array('cancelled', 'rejected', 'regret')) )
+        {
+            $err = 1;
+            $err_msg = "Invalid Status!";
+        }
+   }
+
    if ( (!$err) && ($_REQUEST['stage'] == 1) )
    {
 	$logged_in = 1;
