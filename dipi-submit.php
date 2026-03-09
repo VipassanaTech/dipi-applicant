@@ -80,6 +80,15 @@ foreach ($data as $key => $value)
 if ($app['a_friend_family_details'])
     $app['a_friend_family']=1;
 
+if(isset($app['a_dob_s']))
+{
+	if($app['a_dob_s'])
+		$app['a_dob'] = $app['a_dob_s'];
+
+	unset($app['a_dob_s']);
+}
+
+
 if ($data['country'])
 {
     unset($app['a_state']);
