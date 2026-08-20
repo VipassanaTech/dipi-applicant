@@ -55,7 +55,7 @@ foreach ($data as $key => $value)
     }    
     if ( substr($key,0,3) == 'ae_')
     {
-        if (in_array($key, array('ae_desc_other_technique', 'ae_desc_mental', 'ae_desc_physical', 'ae_desc_medication', 'ae_desc_addiction_current', 'ae_pregnant_detail')))
+        if (in_array($key, array('ae_desc_other_technique', 'ae_desc_mental', 'ae_desc_physical', 'ae_desc_medication', 'ae_desc_addiction_current', 'ae_pregnant_detail', 'ae_teach_other_details')))
         {
             if ( trim($value) <> '0' )
             {
@@ -66,6 +66,8 @@ foreach ($data as $key => $value)
                     $app['a_addiction_current'] = 1;
                 elseif ($key == 'ae_pregnant_detail')
                     $app_ae['ae_pregnant'] = 1;
+                elseif ($key == 'ae_teach_other_details')
+                    $app['a_teach_others'] = 1;
                 else
                     $app[str_replace("ae_desc", "a", $key)] = 1;
             }
