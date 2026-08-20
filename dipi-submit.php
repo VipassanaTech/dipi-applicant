@@ -57,7 +57,7 @@ foreach ($data as $key => $value)
     {
         if (in_array($key, array('ae_desc_other_technique', 'ae_desc_mental', 'ae_desc_physical', 'ae_desc_medication', 'ae_desc_addiction_current', 'ae_pregnant_detail', 'ae_teach_other_details')))
         {
-            if ( trim($value) <> '0' )
+            if ( (trim($value) <> '0') && (trim($value) <> '') )
             {
                 $app_ae[$key] = $value;
                 if (in_array($key, array('ae_desc_physical', 'ae_desc_mental')))
