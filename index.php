@@ -43,10 +43,20 @@ if ( isset($_REQUEST['stage']) )
        }
        else
        {
-	    if ( !in_array(strtolower($row['a_status']), array('preconfirmation','reconfirmation','confirmed','expected', 'clarification')) )
+	    /* Anything still in flight may open this page. For most statuses the only
+	       action offered below is cancelling, and confirm, re-confirm and
+	       clarification each check their own status again at stage 2 - so
+	       widening this gate does not widen those.
+
+	       The old list named five statuses and left out Received and WaitList,
+	       which meant roughly 16,000 applicants on live applications could not
+	       cancel from the link in their own email. This is now a list of the
+	       states that are genuinely finished, matching what WhatsApp and the
+	       API apply. */
+	    if ( in_array(strtolower(trim($row['a_status'])), array('cancelled','rejected','regret','duplicate','attended','left')) )
 	    {
 		$err = 1;
-		$err_msg = "Invalid Status!";
+		$err_msg = "This application is already ".$row['a_status']." and cannot be changed.";
 	    }
 	    else
 	    {
@@ -90,10 +100,13 @@ if ( isset($_REQUEST['stage']) )
             $err_msg = "Invalid Status!";
         }
 
-        if( (strtolower($_REQUEST['status']) == 'cancelled') && in_array(strtolower($row['a_status']), array('cancelled', 'rejected', 'regret')) )
+        /* Same list as the gate above - kept because stage 2 is reachable
+           directly, not only by walking through stage 1. */
+        if( (strtolower($_REQUEST['status']) == 'cancelled')
+            && in_array(strtolower(trim($row['a_status'])), array('cancelled','rejected','regret','duplicate','attended','left')) )
         {
             $err = 1;
-            $err_msg = "Invalid Status!";
+            $err_msg = "This application is already ".$row['a_status']." and cannot be cancelled.";
         }
    }
 
