@@ -32,7 +32,10 @@ $app['a_created'] = date('Y-m-d H:i:s');
 $app['a_updated_by'] = $system_uids['COURSE-APPLICANT-UID'];
 $app['a_updated'] = date('Y-m-d H:i:s');
 $app['a_attended'] = 0;
-$app['a_m_name'] = '';
+
+if (!isset($app['a_m_name'])) {
+    $app['a_m_name'] = '';
+}
 
 foreach ($data as $key => $value)
 {
