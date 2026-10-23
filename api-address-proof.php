@@ -75,7 +75,9 @@ if ( $_POST['confno'] == '' )
    exit();
 }
 
-$_POST['confno'] = str_replace("-", "", $_POST['confno']);
+// Security: whitelist conf-no to alphanumerics (still strips the dashes as before).
+// Neutralises SQL injection and path traversal via this value (used in the queries and the upload path below).
+$_POST['confno'] = preg_replace('/[^A-Za-z0-9]/', '', $_POST['confno']);
 
 if ( !is_array($_FILES['img']) )
 {
@@ -92,7 +94,8 @@ if ( $_FILES['img']['name'] == '' )
 }
 
 $date = date('Y-m-d');
-if ( isset($_POST['date']) && ($_POST['date'] <> ''))
+// Security: only accept a well-formed YYYY-MM-DD date (else keep today's default) to prevent SQL injection.
+if ( isset($_POST['date']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_POST['date']) )
    $date = $_POST['date'];
 
 
@@ -160,7 +163,8 @@ if (!move_uploaded_file($_FILES['img']['tmp_name'], $uploadfile))
    $applicant_id = my_result("select a_id from dh_applicant where a_center='$centre' and a_course='$course' and a_conf_no='".$_POST['confno']."'");
    $old = getcwd();
    chdir($APP_ROOT);
-   $cmd = "/usr/bin/php action.php $applicant_id 'Photo'";
+   // Security: a_id is always an integer; cast to prevent command injection through this value.
+   $cmd = "/usr/bin/php action.php " . (int)$applicant_id . " 'Photo'";
 //   logit("Called - $cmd");
    exec($cmd);
    chdir($old);
