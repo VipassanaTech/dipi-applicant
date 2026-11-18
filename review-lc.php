@@ -5,7 +5,8 @@ include_once("dana-s3.inc");
 
 $err = 0;
 $err_msg = '';
-$rtype = $_REQUEST['t'];
+$rtype = isset($_REQUEST['t']) ? $_REQUEST['t'] : '';
+$submit_url = '';
 if ($rtype == 'r') {$auth_field = 'al_recommending_auth'; $submit_url = "/r-review"; }
 if ($rtype == 'a') {$auth_field = 'al_area_auth'; $submit_url = "/a-review" ; }
 $cat = 0;
@@ -26,13 +27,23 @@ if ( isset($_REQUEST['stage']) )
 	  $err_msg = "Select Failed!";
    }*/
    //$login = htmlentities(addslashes($_POST['login']));
-   $auth = htmlentities(addslashes($_REQUEST['authcode']));
+   $auth_in = isset($_REQUEST['authcode']) ? (string) $_REQUEST['authcode'] : '';
+   $auth = htmlentities(addslashes($auth_in));
+   // Only a real link: t=r (recommending) or t=a (area) with a code of letters and digits. Anything else matches nothing.
+   if ( (!$err) && ( !in_array($rtype, array('r', 'a'), TRUE) || !preg_match('/^[0-9A-Za-z]+$/', $auth_in) ) )
+   {
+	  $err = 1;
+	  $err_msg = "This review link is not valid.";
+   }
+   if (!$err)
+   {
    $q = "select CONCAT(a_f_name, ' ', a_m_name, ' ', a_l_name) as 'Name', a_type, a_id, a_center, a_course, c_name, c_start, a_status,a_city_str, a_photo,  ac.*, al.*, td_key from dh_applicant left join dh_course on (a_course=c_id) left join dh_applicant_lc al on (a_id=al_applicant) left join dh_applicant_course ac on (a_id=ac_applicant) left join dh_type_detail on c_course_type=td_id where  $auth_field ='$auth'";
    $hand = mysqli_query( $DB_CONN, $q);
    if (!$hand)
    {
 	$err = 1;
 		$err_msg = "Query Failed!";
+   }
    }
    $at_reco = "";
    if ( (!$err) && (mysqli_num_rows($hand) > 0) )
@@ -99,12 +110,24 @@ if ( isset($_REQUEST['stage']) )
 				$status = array(); 
 				$status['Rejected'] = 'Reject Application';
 				$status['Approved'] = 'Approve Application';
-				if ($rtype == 'r') {
+				if ($rtype == 'r')
 					$status['Transfer'] = 'Transfer to Registrar';
-					if (strtolower($row['a_status']) <> 'r-atreview')
+				// Each link works only for its own step: the recommending link while the recommending AT has not
+				// decided; the area link after the recommending AT approved and while the area AT has not decided.
+				$st = strtolower($row['a_status']);
+				$reco_open = ($st == 'r-atreview') || ($st == 'errors' && !in_array($row['al_recommending_approved'], array('Approved', 'Rejected', 'Transfer to Registrar')));
+				$area_open = ($st == 'a-atreview') || ($st == 'errors' && $row['al_recommending_approved'] == 'Approved' && !in_array($row['al_area_at_approved'], array('Approved', 'Rejected')));
+				if ( ($rtype == 'r') && (!$reco_open) )
+					$already_submitted = 1;
+				if ( ($rtype == 'a') && (!$area_open) )
+				{
+					if ($reco_open)
 					{
-						$already_submitted = 1;
+						$err = 1;
+						$err_msg = "This application is still with the recommending teacher. You will get an email when it is ready for your review.";
 					}
+					else
+						$already_submitted = 1;
 				}
 				$status_opt = '';
 				foreach( $status as $k => $v ) {
@@ -113,10 +136,10 @@ if ( isset($_REQUEST['stage']) )
 			}
 		}
    }
-   else
+   elseif (!$err)
    {
 		$err = 1;
-		$err_msg = "Invalid Login Details!";
+		$err_msg = "This review link is no longer valid. The application may have been passed to another teacher, or a newer email has been sent. Please use the link in the latest email, or the DIPI AT Portal.";
    }
    if ( (!$err) && ($_REQUEST['stage'] == 1) )
    {
@@ -143,7 +166,11 @@ if ( isset($_REQUEST['stage']) )
    {
 		$input_status = $_POST['status'];
 		$file = '';
-		if ( in_array($input_status, array('Approved', 'Rejected', 'Transfer'))  )
+		// A step already decided saves nothing. The area link has no Transfer.
+		$allowed = ($rtype == 'r') ? array('Approved', 'Rejected', 'Transfer') : array('Approved', 'Rejected');
+		if ($already_submitted)
+			$err_msg = "Nothing was changed.";
+		elseif ( in_array($input_status, $allowed)  )
 		{
 		   if ( !$err )
 		   {
@@ -414,7 +441,7 @@ if ( isset($_REQUEST['stage']) )
 <!--      <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p> -->
 	<?php endif; ?>
 	<?php if ($already_submitted): ?>
-		<h1 class="h3 mb-3 font-weight-normal">Recommending AT Review already submitted</h1>
+		<h1 class="h3 mb-3 font-weight-normal"><?php echo ($rtype == 'a') ? 'Area' : 'Recommending'; ?> AT Review already submitted</h1>
 	<?php endif; ?>	
 
 	<div class='lc-footer'>
