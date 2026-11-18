@@ -192,7 +192,7 @@ if ( isset($_REQUEST['stage']) )
 				 else 
 				 {
 				 	$new_status = 'R-ATTransfer'; 
-				 	$q = "update dh_applicant_lc set  al_recommending_approved='Transfer to Registrar', al_recommending='', al_recommending_comments = '$comments',  where $auth_field ='$auth'";
+				 	$q = "update dh_applicant_lc set al_recommending_approved='Transfer to Registrar', al_area_at='', al_recommending_comments = '$comments' where $auth_field ='$auth'";
 				 	mysqli_query($DB_CONN,$q);
 				 }				   
 			  }
